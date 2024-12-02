@@ -5,12 +5,10 @@ import "../styles/Home.css"
 
 function Home() {
     const [notes, setNotes] = useState([]);
-    const [memo_Records, setMemoRecords] = useState([]);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
 
     useEffect(() => {
-        getMemoRecords();
         getNotes();
     }, []);
 
@@ -24,25 +22,13 @@ function Home() {
             })
             .catch((err) => alert(err));
     };
-
-    const getMemoRecords = () => {
-        api
-            .get("/api/memo_records/")
-            .then((res) => res.data)
-            .then((data) => {
-                alert("Data fetched: " + JSON.stringify(data)); 
-                alert("Data size: " + Object.keys(data).length); 
-                setMemoRecords(data);
-                console.log(data + "Zebo");
-            })
-            .catch((err) => alert(err));
-    };
+ 
 
     const deleteNote = (id) => {
         api
             .delete(`/api/notes/delete/${id}/`)
             .then((res) => {
-                if (res.status === 204) alert("Note deleted!");
+                if (res.status === 204) alert("Note deleted!   id: " + id);
                 else alert("Failed to delete note.");
                 getNotes();
             })
@@ -54,8 +40,6 @@ function Home() {
         api
             .post("/api/notes/", { content, title })
             .then((res) => {
-                if (res.status === 201) alert("Note created!");
-                else alert("Failed to make note.");
                 getNotes();
             })
             .catch((err) => alert(err));
@@ -64,18 +48,14 @@ function Home() {
     return (
         <div>
             <div>
-{/*                 
+                
                 {getNotes}
                 <h2>Notes</h2>
                 {notes.map((note) => (
                     <Note note={note} onDelete={deleteNote} key={note.id} />
-                ))} */}
-
-                {getMemoRecords}
-                <h2>MemoRecords</h2>
-                {memo_Records.map((memo_Record) => (
-                    <MemoRecord note={memo_Records} key={memo_Records.id} />
                 ))}
+
+ 
 
             </div>
             <h2>Create a Note</h2>
