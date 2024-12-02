@@ -6,6 +6,7 @@ import "../styles/Home.css"
 function MemoRecords() {
     
     const [memo_records, setMemoRecords] = useState([]);
+    const [record_Details, setRecord_Details] = useState("");
 
     useEffect(() => {
         getMemoRecords();
@@ -21,34 +22,33 @@ function MemoRecords() {
             })
             .catch((err) => alert(err));
     };
- 
-    // const createMemoRecords = (e) => {
-    //     e.preventDefault();
+     
+    const createMemoRecords = (e) => {
+        e.preventDefault();
+        api
+            .post("/api/memo_records/", { record_Details })
+            .then((res) => {
+                if (res.status === 201) console.log("Note created!");
+                else console.log("Failed to make note.");
+                getMemoRecords();
+            })
+            .catch((err) => alert(err));
+    };
+
+    // const deleteNote = (id) => {
     //     api
-    //         .post("/api/memo_records/", { record_Detail })
+    //         .delete(`/api/memo_records/delete/${id}/`)
     //         .then((res) => {
-    //             if (res.status === 201) alert("Note created!");
-    //             else alert("Failed to make note.");
-    //             getMemoRecords();
+    //             if (res.status === 204) alert("Note deleted!");
+    //             else alert("Failed to delete note.");
+    //             getNotes();
     //         })
-    //         .catch((err) => alert(err));
+    //         .catch((error) => alert(error));
     // };
 
-    // const createMemoRecords = (e) => {
-    //     e.preventDefault();
-    //     api
-    //         .post("/api/memo_records/", { record_Detail })
-    //         .then((res) => {
-    //             if (res.status === 201) {
-    //                 alert("Memo record created!");
-    //                 getMemoRecords();
-    //             } else {
-    //                 alert("Failed to create memo record.");
-    //             }
-    //         })
-    //         .catch((err) => alert("Error: " + err));
-    // };
-     
+// ################################################################################
+// ################################################################################
+// ################################################################################
 
     return (
         <div>
@@ -56,11 +56,11 @@ function MemoRecords() {
                 <h2>memo_records</h2>
                 <p>Number of records: {memo_records.length}</p>
                 {memo_records.map((memo_record) => (
-                    <MemoRecord memo_record={memo_record} />
+                    <MemoRecord memo_record={memo_record}  />
                 ))}
             </div>
  
-            {/* <h2>Create a Note</h2>
+            <h2>Create a Memo Record</h2>
             <form onSubmit={createMemoRecords}>
                 <label htmlFor="content">Content:</label>
                 <br />
@@ -68,12 +68,12 @@ function MemoRecords() {
                     id="content"
                     name="content"
                     required
-                    value={record_Detail}
-                    onChange={(e) => setRecordDetail(e.target.value)}
+                    value={record_Details}
+                    onChange={(e) => setRecord_Details(e.target.value)}
                 ></textarea>
                 <br />
                 <input type="submit" value="Submit"></input>
-            </form> */}
+            </form>
         </div>
     );
 }

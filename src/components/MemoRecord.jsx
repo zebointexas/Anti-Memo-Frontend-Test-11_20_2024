@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/Note.css"
 
-function MemoRecord({ memo_record }) {
+function MemoRecord({ memo_record}) {
 
     return (
         <div className="memo_record-container">
