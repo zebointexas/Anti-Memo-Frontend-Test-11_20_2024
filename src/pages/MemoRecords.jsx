@@ -35,29 +35,21 @@ function MemoRecords() {
             })
             .catch((err) => alert(err));
     };
-
-    const updateMemoRecord = (e) => {
-        e.preventDefault();
-        api
-            .put(`/api/memo_records/update/${id}/`, { record_Details }) // Use PUT instead of POST
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Note updated successfully!");
-                } else {
-                    console.log("Failed to update note.");
-                }
-                getMemoRecords(); // Refresh the memo list after update
-            })
-            .catch((err) => alert(err));
+  
+    const [currentIndex, setCurrentIndex] = useState(0);
+ 
+    const currentRecord = memo_records[currentIndex];
+ 
+    const goToPrevious = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+        }
     };
-    
-    const deleteNote = (id) => {
-        api
-            .delete(`/api/memo_records/delete/${id}/`)
-            .then((res) => {
-                getMemoRecords();
-            })
-            .catch((error) => alert(error));
+ 
+    const goToNext = () => {
+        if (currentIndex < memo_records.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        }
     };
 
 // ################################################################################
@@ -66,7 +58,7 @@ function MemoRecords() {
 
     return (
         <div>
-            <div>
+            {/* <div>
                 <h2>memo_records</h2>
                 <p>Number of records: {memo_records.length}</p>
                 {memo_records.map((memo_record) => {
@@ -81,7 +73,28 @@ function MemoRecords() {
                         />
                     );
                 })}
+            </div> */}
+
+
+            <div>
+                <h2>Memo Records</h2>
+                <p>Number of records: {memo_records.length}</p>
+                {currentRecord && (
+                    <div>
+                        <MemoRecordDetails 
+                            key={currentRecord.id} 
+                            memo_record={currentRecord}  
+                        />
+                    </div>
+                )}
+            <div>
+                <button onClick={goToPrevious} disabled={currentIndex === 0}>Previous</button>
+                <button onClick={goToNext} disabled={currentIndex === memo_records.length - 1}>Next</button>
             </div>
+        </div>
+
+
+
  
             <h2>Create a Memo Record</h2>
             <form onSubmit={createMemoRecord}>

@@ -6,29 +6,71 @@ import "../styles/Home.css"
 
 function MemoRecordDetails({ memo_record, onDelete, onUpdate }) {
  
-    // 初始化状态为 memo_record 中的 record_Details
-    const [updated_Record_Details, setUpdatedContent] = useState(memo_record.record_Details);
+    const [isEditing, setIsEditing] = useState(false);
+    const [updated_Record_Details, setUpdatedRecordDetails] = useState(memo_record.record_Details);
 
     useEffect(() => {
-        // 当 memo_record 更新时，重新设置状态
-        setUpdatedContent(memo_record.record_Details);
+        setUpdatedRecordDetails(memo_record.record_Details);
     }, [memo_record]);
 
     // 处理内容更新
     const handleContentChange = (e) => {
-        setUpdatedContent(e.target.value);
+        setUpdatedRecordDetails(e.target.value);
     };
 
-    // 提交更新
-    const handleSubmitUpdate = (e) => {
-        e.preventDefault();
-        // 调用父组件传递的 onUpdate 函数来提交更新
+    const handleDetailsUpdate = (e) => {
         if (updated_Record_Details !== memo_record.record_Details) {
-            updateMemoRecord(memo_record.id, { record_Details: updated_Record_Details });
+            updateMemoRecordDetails(memo_record.id, { record_Details: updated_Record_Details });
         }
+
+        setIsEditing(false);
+    }
+
+    const handleRemember = (e) => {
+        
+        e.preventDefault();
+
+        api
+        .put(`/api/memo_records/update/${memo_record.id}/`, {
+            record_Details: updated_Record_Details
+        }, {
+            headers: {
+                'Remember-Status': 'Remember'   
+            }
+        })
+        .then((res) => {
+            if (res.status === 200) {
+                console.log("Note updated successfully!");
+            } else {
+                console.log("Failed to update note.");
+            }
+        })
+        .catch((err) => alert(err));
     };
 
-    const updateMemoRecord = (e) => {
+    const handleForget = (e) => {
+
+        e.preventDefault();
+
+        api
+        .put(`/api/memo_records/update/${memo_record.id}/`, {
+            record_Details: updated_Record_Details
+        }, {
+            headers: {
+                'Remember-Status': 'Forget'   
+            }
+        })
+        .then((res) => {
+            if (res.status === 200) {
+                console.log("Note updated successfully!");
+            } else {
+                console.log("Failed to update note.");
+            }
+        })
+        .catch((err) => alert(err));
+    };
+
+    const updateMemoRecordDetails = (e) => {
         api
             .put(`/api/memo_records/update/${memo_record.id}/`, { record_Details: updated_Record_Details}) // Use PUT instead of POST
             .then((res) => {
@@ -41,26 +83,42 @@ function MemoRecordDetails({ memo_record, onDelete, onUpdate }) {
             .catch((err) => alert(err));
     };
 
+    const handleEdit = () => {
+        setIsEditing(true);
+      };
+
+    const handleEditToggle = () => {
+        if (isEditing) {
+            handleDetailsUpdate();
+        } else {            
+            setIsEditing(true);
+        }
+    };  
+
     return (
         <div className="memo_record-container">
-            <form onSubmit={handleSubmitUpdate}>
- 
-                <label htmlFor="updatedContent">Content:</label>
-                <textarea
-                    id="updatedContent"
-                    value={updated_Record_Details}
-                    onChange={handleContentChange}
-                />
-                <br />
- 
-                <p>ID: {memo_record.id}</p>
-        
-                <button type="submit">Save Changes</button>
-       
-                <button type="button" onClick={() => onDelete(memo_record.id)}>
-                    Delete
-                </button>
-            </form>
+          <form>
+            <p>ID: {memo_record.id}</p> 
+            <label>Content:</label>
+            
+            {/* 如果是编辑模式，显示 textarea 否则显示内容 */}
+            {isEditing ? (
+              <textarea
+                value={updated_Record_Details}
+                onChange={handleContentChange}
+              />
+            ) : (
+              <p>{updated_Record_Details}</p>  // 显示内容而不是编辑框
+            )}
+            
+            <br />
+             
+            <button onClick={handleRemember}>Remember</button>
+            <button onClick={handleForget}>Forget</button> 
+            <button type="button" onClick={handleEditToggle}>
+                 {isEditing ? 'Save' : 'Edit'}
+            </button>    
+          </form>
         </div>
     );
 }
