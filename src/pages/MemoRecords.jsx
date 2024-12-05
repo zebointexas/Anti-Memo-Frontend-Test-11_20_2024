@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
+import React from "react";
+import "../styles/Home.css";
 import api from "../api";
-import MemoRecordDetails from "../components/MemoRecordDetails"
-import "../styles/Home.css"
+import { useNavigate } from "react-router-dom";
+import MemoRecordDetails from "../components/MemoRecordDetails"; // 导入 MemoRecordDetails 组件
 
 function MemoRecords() {
-    
     const [memo_records, setMemoRecords] = useState([]);
-    const [record_Details, setRecord_Details] = useState("");
-    const [id, setId] = useState("");
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getMemoRecords();
@@ -23,93 +24,39 @@ function MemoRecords() {
             })
             .catch((err) => alert(err));
     };
-     
-    const createMemoRecord = (e) => {
-        e.preventDefault();
-        api
-            .post("/api/memo_records/", { record_Details })
-            .then((res) => {
-                if (res.status === 201) console.log("Note created!");
-                else console.log("Failed to make note.");
-                getMemoRecords();
-            })
-            .catch((err) => alert(err));
-    };
-  
-    const [currentIndex, setCurrentIndex] = useState(0);
- 
+
     const currentRecord = memo_records[currentIndex];
- 
-    const goToPrevious = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-        }
-    };
- 
+
     const goToNext = () => {
         if (currentIndex < memo_records.length - 1) {
             setCurrentIndex(currentIndex + 1);
         }
     };
 
-// ################################################################################
-// ################################################################################
-// ################################################################################
+    const goToCreate = () => {
+        navigate("/create-a-memo-record");
+    };
 
     return (
         <div>
-            {/* <div>
-                <h2>memo_records</h2>
-                <p>Number of records: {memo_records.length}</p>
-                {memo_records.map((memo_record) => {
-                    // Print each record's details to the console
-                    //console.log(memo_record);
-
-                    return (
-                        <MemoRecordDetails 
-                            onDelete={deleteNote} 
-                            key={memo_record.id} 
-                            memo_record={memo_record}  
-                        />
-                    );
-                })}
-            </div> */}
-
-
             <div>
                 <h2>Memo Records</h2>
                 <p>Number of records: {memo_records.length}</p>
                 {currentRecord && (
                     <div>
                         <MemoRecordDetails 
-                            key={currentRecord.id} 
                             memo_record={currentRecord}  
+                            goToNext={goToNext} // 传递 goToNext 方法
                         />
                     </div>
                 )}
-            <div>
-                <button onClick={goToPrevious} disabled={currentIndex === 0}>Previous</button>
-                <button onClick={goToNext} disabled={currentIndex === memo_records.length - 1}>Next</button>
             </div>
-        </div>
-
-
-
- 
-            <h2>Create a Memo Record</h2>
-            <form onSubmit={createMemoRecord}>
-                <label htmlFor="content">Content:</label>
-                <br />
-                <textarea
-                    id="content"
-                    name="content"
-                    required
-                    value={record_Details}
-                    onChange={(e) => setRecord_Details(e.target.value)}
-                ></textarea>
-                <br />
-                <input type="submit" value="Submit"></input>
-            </form>
+    
+            <br />
+            <br />
+            <div>
+                <button onClick={goToCreate}>Create a Memo Record</button>         
+            </div>
         </div>
     );
 }
