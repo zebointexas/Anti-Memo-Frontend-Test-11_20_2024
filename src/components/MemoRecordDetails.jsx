@@ -38,9 +38,9 @@ function MemoRecordDetails({ memo_record, goToNext }) {
             })
             .then((res) => {
                 if (res.status === 200) {
-                    console.log("Note updated successfully!");
+                    console.log('Added "Remember" to memo_record id: ' + memo_record.id);
                 } else {
-                    console.log("Failed to update note.");
+                    console.log("Failed to update study status.");
                 }
             })
             .catch((err) => alert(err));
@@ -56,9 +56,9 @@ function MemoRecordDetails({ memo_record, goToNext }) {
             })
             .then((res) => {
                 if (res.status === 200) {
-                    console.log("Note updated successfully!");
+                    console.log('Added "Forget" to memo_record id: ' + memo_record.id);
                 } else {
-                    console.log("Failed to update note.");
+                    console.log("Failed to update MemoRecord.");
                 }
             })
             .catch((err) => alert(err));
@@ -74,15 +74,37 @@ function MemoRecordDetails({ memo_record, goToNext }) {
         }
     };
 
+    const deleteNote = (id) => {
+        api
+            .delete(`/api/memo_records/delete/${id}/`)
+            .then((res) => {
+                if (res.status === 204) alert("memo_records deleted!   id: " + id);
+                else alert("Failed to delete memo_records.");
+                getNotes();
+            })
+            .catch((error) => alert(error));
+    };
+
     return (
         <div className="memo_record-container">
             <form>
-                <p>ID: {memo_record.id}</p>
+                <p>MemoRecord ID: {memo_record.id}</p>
+                <p>study_history_id: {memo_record.study_history.id}</p>
+                <p>last_updated: 
+                    {new Date(memo_record.study_history.last_updated).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    })}
+                </p>
                 <label>Content:</label>
                 {isEditing ? (
                     <textarea
                         value={updated_record_details}
                         onChange={handleContentChange}
+                        onDelete={deleteNote}
                     />
                 ) : (
                     <p>{updated_record_details}</p>

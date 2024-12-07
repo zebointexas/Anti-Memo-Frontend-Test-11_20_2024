@@ -12,8 +12,8 @@ function CreateAMemoRecord() {
         api
             .post("/api/memo_records/", { record_details })
             .then((res) => {
-                if (res.status === 201) console.log("Note created!");
-                else console.log("Failed to make note.");
+                if (res.status === 201) console.log("MemoRecord was created!");
+                else console.log("Failed to make a memoRecord.");
             })
             .catch((err) => alert(err));
     };

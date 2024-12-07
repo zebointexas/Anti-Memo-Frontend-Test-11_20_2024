@@ -23,7 +23,10 @@ function LoginForm({ route, method }) {
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate("/")
+                // 登录成功后，获取保存的 redirectUrl，如果存在则跳转回原页面
+                const redirectUrl = localStorage.getItem("redirectUrl") || "/";
+                localStorage.removeItem("redirectUrl"); // 清除 redirectUrl
+                navigate(redirectUrl);
             } else {
                 navigate("/login")
             }
@@ -59,4 +62,4 @@ function LoginForm({ route, method }) {
     );
 }
 
-export default LoginForm
+export default LoginForm;
