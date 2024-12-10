@@ -17,7 +17,7 @@ function MemoRecords() {
 
     const getMemoRecords = () => {
         api
-            .get("/api/memo_records/")
+            .get("/api/memo_records_list/")
             .then((res) => res.data)
             .then((data) => {
                 console.log("Data fetched: " + JSON.stringify(data) + "     data size: " + Object.keys(data).length); 
@@ -69,7 +69,7 @@ function MemoRecords() {
                     currentRecord && (
                         <div>
                             <MemoRecordDetails 
-                                memo_record={currentRecord}  
+                                memo_record={currentRecord}
                                 goToNext={goToNext} 
                             />
                         </div>

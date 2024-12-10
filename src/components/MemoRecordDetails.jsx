@@ -74,24 +74,28 @@ function MemoRecordDetails({ memo_record, goToNext }) {
         }
     };
 
-    const deleteNote = (id) => {
-        api
-            .delete(`/api/memo_records/delete/${id}/`)
-            .then((res) => {
-                if (res.status === 204) alert("memo_records deleted!   id: " + id);
-                else alert("Failed to delete memo_records.");
-                getNotes();
-            })
-            .catch((error) => alert(error));
+    const deleteMemoRecord = (id) => {
+        if (window.confirm("Are you sure you want to delete this record?")) {
+            api
+                .delete(`/api/memo_records/delete/${id}/`)
+                .then((res) => {
+                    if (res.status === 204) {
+                        goToNext(); // Move to the next record or handle the UI update
+                    } else {
+                        alert("Failed to delete MemoRecord.");
+                    }
+                })
+                .catch((error) => alert(error));
+        }
     };
 
     return (
         <div className="memo_record-container">
             <form>
                 <p>MemoRecord ID: {memo_record.id}</p>
-                <p>study_history_id: {memo_record.study_history.id}</p>
+                <p>study_history_id: {memo_record.study_history_id.id}</p>
                 <p>last_updated: 
-                    {new Date(memo_record.study_history.last_updated).toLocaleString('en-US', {
+                    {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
@@ -114,6 +118,14 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                 <button onClick={handleForget}>Forget</button>
                 <button type="button" onClick={handleEditToggle}>
                     {isEditing ? 'Save' : 'Edit'}
+                </button>
+                
+                <button
+                    type="button"
+                    onClick={() => deleteMemoRecord(memo_record.id)}
+                    style={{ backgroundColor: "red", color: "white", marginLeft: "10px" }}
+                >
+                    Delete
                 </button>
             </form>
         </div>
