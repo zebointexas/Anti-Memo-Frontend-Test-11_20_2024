@@ -8,6 +8,7 @@ import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import ProtectedRoute from "./components/ProtectedRoute"
 import UpdateSubjectType from "./pages/UpdateSubjectType";
+import UpdateStudyScope from "./pages/UpdateStudyScope"
 
 function Logout() {
   localStorage.clear()
@@ -37,6 +38,7 @@ function App() {
         <Route path="/memo-records" element={<MemoRecords />} />
         <Route path="/create-a-memo-record" element={<CreateAMemoRecord />} />
         <Route path="/update-subject-type" element={<UpdateSubjectType />} />
+        <Route path="/update-study-scope" element={<UpdateStudyScope />} />
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
     </BrowserRouter>

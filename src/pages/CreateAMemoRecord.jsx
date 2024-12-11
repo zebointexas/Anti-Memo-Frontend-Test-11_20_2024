@@ -30,6 +30,9 @@ function CreateAMemoRecord() {
             return;
         }
 
+        console.log(record_details)
+        console.log(subject_type)
+
         api
             .post("/api/memo_records/create/", { 
                 record_details, 

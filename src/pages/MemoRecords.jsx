@@ -9,6 +9,7 @@ function MemoRecords() {
     const [memo_records, setMemoRecords] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);  
+    const [studyScopeId, setStudyScopeId] = useState(null); // 新增 study_scope_id 变量
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -51,6 +52,17 @@ function MemoRecords() {
         setRefreshKey(prevKey => prevKey + 1);  
     };
 
+    const goToUpdateStudyScope = () => {
+        // 获取第一个有效的 study_scope_id
+        const validRecord = memo_records.find(record => record.study_scope_id);
+        if (validRecord && validRecord.study_scope_id) {
+            setStudyScopeId(validRecord.study_scope_id); // 设置 study_scope_id
+            navigate(`/update-study-scope`, { state: { study_scope_id: validRecord.study_scope_id.id } });
+        } else {
+            alert("No valid study_scope_id found.");
+        }
+    };
+
     return (
         <div>
             <div>
@@ -80,7 +92,8 @@ function MemoRecords() {
             <br />
             <br />
             <div>
-                <button onClick={goToCreate}>Create a Memo Record</button>         
+                <button onClick={goToCreate}>Create a Memo Record</button>  
+                <button onClick={goToUpdateStudyScope}>Update Study Scope</button>      
             </div>
         </div>
     );

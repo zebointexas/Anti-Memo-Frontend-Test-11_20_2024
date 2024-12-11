@@ -16,24 +16,24 @@ function MemoRecordDetails({ memo_record, goToNext }) {
 
     const handleDetailsUpdate = () => {
         if (updated_record_details !== memo_record.record_details) {
-            api
-                .put(`/api/memo_records/update/${memo_record.id}/`, { record_details: updated_record_details })
+            api   
+                .put(`/api/memo_records/update/record-details/${memo_record.id}/`, { record_details: updated_record_details })
                 .then((res) => {
                     if (res.status === 200) {
-                        console.log("Note updated successfully!");
+                        console.log("MemoRecord details was updated successfully!");
                     } else {
-                        console.log("Failed to update note.");
+                        console.log("Failed to update MemoRecord details.");
                     }
                 })
                 .catch((err) => alert(err));
         }
         setIsEditing(false);
     };
-
+ 
     const handleRemember = (e) => {
         e.preventDefault();
         api
-            .put(`/api/memo_records/update/${memo_record.id}/`, { record_details: updated_record_details }, {
+            .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { record_details: updated_record_details }, {
                 headers: { 'Remember-Status': 'Remember' }
             })
             .then((res) => {
@@ -51,7 +51,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
     const handleForget = (e) => {
         e.preventDefault();
         api
-            .put(`/api/memo_records/update/${memo_record.id}/`, { record_details: updated_record_details }, {
+            .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { record_details: updated_record_details }, {
                 headers: { 'Remember-Status': 'Forget' }
             })
             .then((res) => {
@@ -108,7 +108,6 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                     <textarea
                         value={updated_record_details}
                         onChange={handleContentChange}
-                        onDelete={deleteNote}
                     />
                 ) : (
                     <p>{updated_record_details}</p>
