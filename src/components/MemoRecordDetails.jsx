@@ -5,6 +5,7 @@ import api from "../api";
 function MemoRecordDetails({ memo_record, goToNext }) {
     const [isEditing, setIsEditing] = useState(false);
     const [updated_record_details, setUpdatedRecordDetails] = useState(memo_record.record_details);
+    const [showContent, setShowContent] = useState(false);
 
     useEffect(() => {
         setUpdatedRecordDetails(memo_record.record_details);
@@ -16,7 +17,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
 
     const handleDetailsUpdate = () => {
         if (updated_record_details !== memo_record.record_details) {
-            api   
+            api
                 .put(`/api/memo_records/update/record-details/${memo_record.id}/`, { record_details: updated_record_details })
                 .then((res) => {
                     if (res.status === 200) {
@@ -29,41 +30,21 @@ function MemoRecordDetails({ memo_record, goToNext }) {
         }
         setIsEditing(false);
     };
- 
-    const handleRemember = (e) => {
-        e.preventDefault();
-        api
-            .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { record_details: updated_record_details }, {
-                headers: { 'Remember-Status': 'Remember' }
-            })
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log('Added "Remember" to memo_record id: ' + memo_record.id);
-                } else {
-                    console.log("Failed to update study status.");
-                }
-            })
-            .catch((err) => alert(err));
-        goToNext(); 
-        setIsEditing(false); 
-    };
 
-    const handleForget = (e) => {
+    const handleStudyStatusUpdate = (study_status) => (e) => {
         e.preventDefault();
         api
-            .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { record_details: updated_record_details }, {
-                headers: { 'Remember-Status': 'Forget' }
-            })
+            .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { study_status })
             .then((res) => {
                 if (res.status === 200) {
-                    console.log('Added "Forget" to memo_record id: ' + memo_record.id);
+                    console.log(`Added "${study_status}" to memo_record id: ${memo_record.id}`);
                 } else {
-                    console.log("Failed to update MemoRecord.");
+                    console.log(`Failed to update study status to "${study_status}".`);
                 }
             })
             .catch((err) => alert(err));
         goToNext();
-        setIsEditing(false); 
+        setIsEditing(false);
     };
 
     const handleEditToggle = () => {
@@ -93,32 +74,42 @@ function MemoRecordDetails({ memo_record, goToNext }) {
         <div className="memo_record-container">
             <form>
                 <p>MemoRecord ID: {memo_record.id}</p>
-                <p>study_history_id: {memo_record.study_history_id.id}</p>
-                <p>last_updated: 
-                    {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    })}
+                <p>Study History ID: {memo_record.study_history_id.id}</p>
+                <p>Last Study Time:&nbsp;&nbsp;&nbsp;
+                {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })}, {new Date(memo_record.study_history_id.last_updated).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                })}
                 </p>
+
+                <p><strong>Question:</strong> {memo_record.question}</p>
+
                 <label>Content:</label>
-                {isEditing ? (
-                    <textarea
-                        value={updated_record_details}
-                        onChange={handleContentChange}
-                    />
+                {showContent ? (
+                    isEditing ? (
+                        <textarea
+                            value={updated_record_details}
+                            onChange={handleContentChange}
+                        />
+                    ) : (
+                        <p>{updated_record_details}</p>
+                    )
                 ) : (
-                    <p>{updated_record_details}</p>
+                    <button type="button" onClick={() => setShowContent(true)}>
+                        Display the Answer
+                    </button>
                 )}
                 <br />
-                <button onClick={handleRemember}>Remember</button>
-                <button onClick={handleForget}>Forget</button>
+                <button onClick={handleStudyStatusUpdate('Remember')}>Remember</button>
+                <button onClick={handleStudyStatusUpdate('Forget')}>Forget</button>
                 <button type="button" onClick={handleEditToggle}>
                     {isEditing ? 'Save' : 'Edit'}
                 </button>
-                
+
                 <button
                     type="button"
                     onClick={() => deleteMemoRecord(memo_record.id)}

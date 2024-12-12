@@ -5,6 +5,7 @@ import "../styles/Home.css";
 
 function CreateAMemoRecord() {
     const [record_details, setRecord_Details] = useState("");
+    const [question, setQuestion] = useState(""); // 新增用于存储“question”的状态
     const [subjectTypes, setSubjectTypes] = useState([]);  // 用于存储从后端获取的科目类型
     const [subject_type, setSelectedSubjectType] = useState(""); // 用于存储用户选择的科目类型
     const navigate = useNavigate();  // 获取 navigate 函数
@@ -30,18 +31,20 @@ function CreateAMemoRecord() {
             return;
         }
 
-        console.log(record_details)
-        console.log(subject_type)
+        console.log(record_details);
+        console.log(question);
+        console.log(subject_type);
 
         api
             .post("/api/memo_records/create/", { 
                 record_details, 
+                question, // 添加 question 字段
                 subject_type
             })
             .then((res) => {
                 if (res.status === 201) {
                     console.log("MemoRecord was created!");
-                    alert("MemoRecord was created!")
+                    alert("MemoRecord was created!");
                 } else {
                     console.log("Failed to create MemoRecord.");
                 }
@@ -58,7 +61,19 @@ function CreateAMemoRecord() {
         <div>
             <h2>Create a Memo Record</h2>
             <form onSubmit={createMemoRecord}>
-                <label htmlFor="content">Content:</label>
+
+                <label htmlFor="question">Question:</label>
+                <br />
+                <textarea
+                    id="question"
+                    name="question"
+                    required
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                ></textarea>
+                <br />
+
+                <label htmlFor="content">Record Details:</label>
                 <br />
                 <textarea
                     id="content"
@@ -68,6 +83,8 @@ function CreateAMemoRecord() {
                     onChange={(e) => setRecord_Details(e.target.value)}
                 ></textarea>
                 <br />
+
+
 
                 <label htmlFor="subject-type">Subject Type:</label>
                 <select
