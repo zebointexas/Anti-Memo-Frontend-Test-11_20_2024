@@ -41,6 +41,7 @@ function CreateAMemoRecord() {
             .then((res) => {
                 if (res.status === 201) {
                     console.log("MemoRecord was created!");
+                    alert("MemoRecord was created!")
                 } else {
                     console.log("Failed to create MemoRecord.");
                 }

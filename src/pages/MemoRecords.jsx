@@ -84,6 +84,8 @@ function MemoRecords() {
                                 memo_record={currentRecord}
                                 goToNext={goToNext} 
                             />
+
+                            {currentRecord.author && <p>Author: {currentRecord.author}</p>}
                         </div>
                     )
                 )}
