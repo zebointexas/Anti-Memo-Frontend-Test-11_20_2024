@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/Note.css";
+import "../styles/MemoRecordDetails.css";
 import api from "../api";
 
 function MemoRecordDetails({ memo_record, goToNext }) {
@@ -30,20 +30,21 @@ function MemoRecordDetails({ memo_record, goToNext }) {
         }
         setIsEditing(false);
     };
-
+ 
     const handleStudyStatusUpdate = (study_status) => (e) => {
         e.preventDefault();
         api
             .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { study_status })
             .then((res) => {
                 if (res.status === 200) {
-                    console.log(`Added "${study_status}" to memo_record id: ${memo_record.id}`);
+                    console.log(`Added \"${study_status}\" to memo_record id: ${memo_record.id}`);
                 } else {
-                    console.log(`Failed to update study status to "${study_status}".`);
+                    console.log(`Failed to update study status to \"${study_status}\".`);
                 }
             })
             .catch((err) => alert(err));
         goToNext();
+        setShowContent(false); // 点击后隐藏内容
         setIsEditing(false);
     };
 
@@ -72,23 +73,16 @@ function MemoRecordDetails({ memo_record, goToNext }) {
 
     return (
         <div className="memo_record-container">
-            <form>
-                <p>MemoRecord ID: {memo_record.id}</p>
-                <p>Study History ID: {memo_record.study_history_id.id}</p>
-                <p>Last Study Time:&nbsp;&nbsp;&nbsp;
-                {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                })}, {new Date(memo_record.study_history_id.last_updated).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                })}
+            <form className="memo-record-form">
+                <p>
+                    <span className="question-text">{memo_record.question}</span>
                 </p>
 
-                <p><strong>Question:</strong> {memo_record.question}</p>
+                <br />
+                <br />
+                <br />
 
-                <label>Content:</label>
+                {/* <label>Content:</label> */}
                 {showContent ? (
                     isEditing ? (
                         <textarea
@@ -96,27 +90,50 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                             onChange={handleContentChange}
                         />
                     ) : (
-                        <p>{updated_record_details}</p>
+                        <p className="display-answer-text">{updated_record_details}</p>
                     )
                 ) : (
-                    <button type="button" onClick={() => setShowContent(true)}>
+                    <button type="display-answer-button" onClick={() => setShowContent(true)}>
                         Display the Answer
                     </button>
                 )}
                 <br />
-                <button onClick={handleStudyStatusUpdate('Remember')}>Remember</button>
-                <button onClick={handleStudyStatusUpdate('Forget')}>Forget</button>
-                <button type="button" onClick={handleEditToggle}>
-                    {isEditing ? 'Save' : 'Edit'}
-                </button>
+                <br />
 
-                <button
-                    type="button"
-                    onClick={() => deleteMemoRecord(memo_record.id)}
-                    style={{ backgroundColor: "red", color: "white", marginLeft: "10px" }}
-                >
-                    Delete
-                </button>
+                <div className="button-container">
+                    <button type="button" onClick={handleStudyStatusUpdate('Remember')}>
+                        Remember
+                    </button>
+                    <button type="button" onClick={handleStudyStatusUpdate('Forget')}>
+                        Forget
+                    </button>
+                    <button type="button" onClick={handleEditToggle}>
+                        {isEditing ? 'Save' : 'Edit'}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => deleteMemoRecord(memo_record.id)}
+                        className="delete-button"
+                    >
+                        Delete
+                    </button>
+                </div>
+
+                <p>MemoRecord ID: {memo_record.id}</p>
+                <p>Study History ID: {memo_record.study_history_id.id}</p>
+                <p>Last Study Time:&nbsp;&nbsp;&nbsp;
+                {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })}
+                </p>
+                <p>Last Study Date:&nbsp;&nbsp;&nbsp;
+                {new Date(memo_record.study_history_id.last_updated).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                })}
+                </p>
             </form>
         </div>
     );
