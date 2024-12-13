@@ -30,7 +30,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
         }
         setIsEditing(false);
     };
- 
+
     const handleStudyStatusUpdate = (study_status) => (e) => {
         e.preventDefault();
         api
@@ -44,7 +44,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
             })
             .catch((err) => alert(err));
         goToNext();
-        setShowContent(false); // 点击后隐藏内容
+        setShowContent(false);
         setIsEditing(false);
     };
 
@@ -53,6 +53,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
             handleDetailsUpdate();
         } else {
             setIsEditing(true);
+            setShowContent(true);  // Show the content when editing starts
         }
     };
 
@@ -62,7 +63,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                 .delete(`/api/memo_records/delete/${id}/`)
                 .then((res) => {
                     if (res.status === 204) {
-                        goToNext(); // Move to the next record or handle the UI update
+                        goToNext();
                     } else {
                         alert("Failed to delete MemoRecord.");
                     }
@@ -72,69 +73,68 @@ function MemoRecordDetails({ memo_record, goToNext }) {
     };
 
     return (
-        <div className="memo_record-container">
-            <form className="memo-record-form">
-                <p>
-                    <span className="question-text">{memo_record.question}</span>
-                </p>
+        <div className="memo-record-wrapper">
+            <div className="memo_record-container">
+                <div className="content-and-buttons">
+                    <form className="memo-record-form">
+                        <p>
+                            <span className="question-text">{memo_record.question}</span>
+                        </p>
 
-                <br />
-                <br />
-                <br />
+                        {showContent ? (
+                            isEditing ? (
+                                <textarea
+                                    value={updated_record_details}
+                                    onChange={handleContentChange}
+                                />
+                            ) : (
+                                <p className="display-answer-text">{updated_record_details}</p>
+                            )
+                        ) : (
+                            <button type="display-answer-button" onClick={() => setShowContent(true)}>
+                                Display the Answer
+                            </button>
+                        )}
 
-                {/* <label>Content:</label> */}
-                {showContent ? (
-                    isEditing ? (
-                        <textarea
-                            value={updated_record_details}
-                            onChange={handleContentChange}
-                        />
-                    ) : (
-                        <p className="display-answer-text">{updated_record_details}</p>
-                    )
-                ) : (
-                    <button type="display-answer-button" onClick={() => setShowContent(true)}>
-                        Display the Answer
-                    </button>
-                )}
-                <br />
-                <br />
+                        <div className="record-meta-info">
+                            <p>MemoRecord ID: {memo_record.id}</p>
+                            <p>Study History ID: {memo_record.study_history_id.id}</p>
+                            <p>Last Study Time:&nbsp;&nbsp;&nbsp;
+                                {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                })}
+                            </p>
+                            <p>Last Study Date:&nbsp;&nbsp;&nbsp;
+                                {new Date(memo_record.study_history_id.last_updated).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                })}
+                            </p>
+                        </div>
+                    </form>
 
-                <div className="button-container">
-                    <button type="button" onClick={handleStudyStatusUpdate('Remember')}>
-                        Remember
-                    </button>
-                    <button type="button" onClick={handleStudyStatusUpdate('Forget')}>
-                        Forget
-                    </button>
-                    <button type="button" onClick={handleEditToggle}>
-                        {isEditing ? 'Save' : 'Edit'}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => deleteMemoRecord(memo_record.id)}
-                        className="delete-button"
-                    >
-                        Delete
-                    </button>
+                    <div className="button-container">
+                        <button type="button" onClick={handleStudyStatusUpdate('Remember')}>
+                            Remember
+                        </button>
+                        <button type="button" onClick={handleStudyStatusUpdate('Forget')}>
+                            Forget
+                        </button>
+                        <button type="button" onClick={handleEditToggle}>
+                            {isEditing ? 'Save' : 'Edit'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => deleteMemoRecord(memo_record.id)}
+                            className="delete-button"
+                        >
+                            Delete
+                        </button>
+                    </div>
                 </div>
-
-                <p>MemoRecord ID: {memo_record.id}</p>
-                <p>Study History ID: {memo_record.study_history_id.id}</p>
-                <p>Last Study Time:&nbsp;&nbsp;&nbsp;
-                {new Date(memo_record.study_history_id.last_updated).toLocaleString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                })}
-                </p>
-                <p>Last Study Date:&nbsp;&nbsp;&nbsp;
-                {new Date(memo_record.study_history_id.last_updated).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                })}
-                </p>
-            </form>
+            </div>
         </div>
     );
 }

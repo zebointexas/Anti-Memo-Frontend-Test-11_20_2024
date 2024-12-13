@@ -66,3 +66,8 @@ div {
   form input[type="submit"]:hover {
     background-color: #0056b3;
   }
+
+  .highlight {
+    color: #4caf50;  /* 高亮颜色，绿色 */
+    font-weight: bold;  /* 加粗文本 */
+}

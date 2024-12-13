@@ -16,17 +16,14 @@
     width: 100%;
 }
 
-button {
-    margin-bottom: 10px;
-}
-
 .button-container {
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
-    align-items: flex-end; /* Align the buttons to the left */
+    align-items: flex-end; /* Align the buttons to the right */
+    align-self: flex-end; /* 将按钮容器对齐到父容器的底部 */
 }
 
+ 
 button.delete-button {
     background-color: red;
     color: white;
@@ -83,3 +80,11 @@ p.display-answer-text {
 p.display-answer-text:hover {
     background-color: #8DBF66;
 }
+
+.memo-record-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh; /* Or set a desired height */
+}
+
