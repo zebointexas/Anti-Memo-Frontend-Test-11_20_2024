@@ -14,6 +14,7 @@ function ViewOneTimeEvents() {
 
     useEffect(() => {
         getOneTimeEvents();
+        setStartDate(new Date().toISOString().slice(0, 16));
     }, []);
 
     const getOneTimeEvents = () => {
@@ -31,23 +32,28 @@ function ViewOneTimeEvents() {
 
     const createOneTimeEvent = (e) => {
         e.preventDefault();
- 
+    
+        // 如果用户只选择了日期，自动添加时间为 "00:00:00"
+        const formattedStartDate = startDate.includes("T")
+            ? startDate
+            : `${startDate}T00:00:00`;
+    
         const eventData = {
             event_name: eventName,
-            event_details: eventDetails,
-            start_date: startDate,
+            event_details: eventDetails || "N/A",
+            start_date: formattedStartDate, // 使用格式化后的日期时间
             is_very_important: isHighImportance,
         };
-
+    
         api
-            .post("/api/one_time_events/create/", eventData) // 发送到创建 OneTimeEvent 的 API
+            .post("/api/one_time_event/create/", eventData)
             .then((res) => {
                 if (res.status === 201) {
                     setEventName("");
                     setEventDetails("");
-                    setStartDate("");
+                    setStartDate(new Date().toISOString().slice(0, 10)); // 重置为当前日期
                     setIsHighImportance(false);
-                    getOneTimeEvents(); // 刷新事件列表
+                    getOneTimeEvents();
                 } else {
                     console.log("Failed to create OneTimeEvent.");
                 }
@@ -55,6 +61,31 @@ function ViewOneTimeEvents() {
             .catch((err) => {
                 console.error("Error creating event:", err);
                 alert("Error creating one-time event!");
+            });
+    };    
+
+    const deleteOneTimeEvent = (id) => {
+        api
+            .delete(`/api/one_time_event/delete/${id}/`)
+            .then((res) => {
+                if (res.status === 204) alert("One-time-event deleted!   id: " + id);
+                else alert("Failed to delete One Time Event.");
+                getOneTimeEvents();
+            })
+            .catch((error) => alert(error));
+    };
+
+    const markEventAsDone = (id) => {
+        api
+            .patch(`/api/one_time_event/update/${id}/`, { is_done: true }) // 假设使用 PATCH 请求
+            .then((res) => {
+                if (res.status === 200) {
+                    getOneTimeEvents(); // 更新事件列表
+                }
+            })
+            .catch((err) => {
+                console.error("Error marking event as done:", err);
+                alert("Error marking event as done!");
             });
     };
 
@@ -66,6 +97,8 @@ function ViewOneTimeEvents() {
                 oneTimeEvents.map((event) => (
                     <OneTimeEventDetails
                         one_time_event_details={event}
+                        onDelete={deleteOneTimeEvent}
+                        onDone={markEventAsDone}
                         key={event.id}
                     />
                 ))
@@ -99,7 +132,7 @@ function ViewOneTimeEvents() {
                 <label htmlFor="start_date">Start Date:</label>
                 <br />
                 <input
-                    type="datetime-local"
+                    type="date" // 只需要用户选择日期
                     id="start_date"
                     name="start_date"
                     value={startDate}
@@ -121,8 +154,8 @@ function ViewOneTimeEvents() {
                             width: "20px",
                             height: "20px",
                             cursor: "pointer",
-                            margin: 0, // 去掉默认的外边距
-                            verticalAlign: "middle" // 确保checkbox与label在同一行
+                            margin: 0,
+                            verticalAlign: "middle",
                         }}
                     />
                 </div>
@@ -131,9 +164,7 @@ function ViewOneTimeEvents() {
                 <br />
                 <input type="submit" value="Create An One Time Event" />
             </form>
-            <br />
-            <br />
-            <br />
+
             <br />
             <br />
             <br />

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { CSSTransition } from "react-transition-group"; // 导入 CSSTransition
 
-function OneTimeEventDetails({ one_time_event_details, onDelete }) {
-    const [showHistory, setShowHistory] = useState(false); // 控制是否显示历史内容
+function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
+    const [showDetails, setShowDetails] = useState(false); // 控制是否显示事件详情，初始值为 false
+    const [isDone, setIsDone] = useState(one_time_event_details.is_done); // 用于记录事件是否已完成
 
     if (!one_time_event_details) {
         return <p>No event details available.</p>;
@@ -16,93 +18,182 @@ function OneTimeEventDetails({ one_time_event_details, onDelete }) {
         { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
     );
 
+    // 调试：检查按钮点击后是否正确更新状态
+    const handleDone = () => {
+        console.log("Marking as done..."); // 调试信息
+        onDone(one_time_event_details.id); // 调用父组件的 onDone
+        setIsDone(true); // 更新状态为已完成
+    };
+
+    // 滚动到页面底部
+    const scrollToBottom = () => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "auto", // 平滑滚动
+        });
+    };
+
     return (
-        <div style={styles.card}>
-            <div style={styles.header}>
-                <h3 style={styles.title}>{one_time_event_details.event_name}</h3>
-                <div>
-                    <button
-                        style={styles.deleteButton}
-                        onClick={() => onDelete(one_time_event_details.id)}
-                    >
-                        Delete
-                    </button>
-                    <button
-                        style={styles.toggleButton}
-                        onClick={() => setShowHistory(!showHistory)}
-                    >
-                        {showHistory ? "Hide History" : "View History"}
-                    </button>
+        <>
+            <style>
+                {`
+                    .card {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        padding: 16px;
+                        margin: 16px auto;
+                        background-color: #fff;
+                        max-width: 500px;
+                        width: 100%;
+                        position: relative;
+                    }
+
+                    .card-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                    }
+
+                    /* 动画样式 */
+                    .fade-enter {
+                        opacity: 0;
+                    }
+                    .fade-enter-active {
+                        opacity: 1;
+                        transition: opacity 0.5s;
+                    }
+                    .fade-exit {
+                        opacity: 1;
+                    }
+                    .fade-exit-active {
+                        opacity: 0;
+                        transition: opacity 0.5s;
+                    }
+
+                    .title {
+                        font-size: 18px;
+                        margin-bottom: 8px;
+                        color: #333;
+                    }
+
+                    .delete-button, .toggle-button, .done-button {
+                        background-color: #4CAF50;
+                        color: #fff;
+                        border: none;
+                        border-radius: 4px;
+                        padding: 8px 12px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        margin-left: 8px;
+                        transition: background-color 0.3s;
+                    }
+
+                    .delete-button {
+                        background-color: #f44336;
+                    }
+
+                    .toggle-button {
+                        background-color: #2196f3;
+                    }
+
+                    .done-button {
+                        background-color: #4CAF50;
+                    }
+
+                    .done-button:disabled {
+                        background-color: #9e9e9e;
+                    }
+
+                    .detail, .meta, .history {
+                        font-size: 14px;
+                        margin: 4px 0;
+                        color: #555;
+                    }
+
+                    .meta {
+                        font-size: 12px;
+                        margin: 8px 0;
+                        color: #888;
+                    }
+
+                    .history {
+                        margin-top: 4px;
+                    }
+
+                    /* 固定按钮样式 */
+                    .scroll-to-bottom-button {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        position: fixed;
+                        bottom: 100px;
+                        right: 100px;
+                        background-color: #2196f3;
+                        color: white;
+                        padding: 22px 40px;
+                        border-radius: 50%;
+                        border: none;
+                        cursor: pointer;
+                        font-size: 50px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                    }
+                `}
+            </style>
+
+            <CSSTransition
+                in={!isDone} // 控制显示和消失的动画
+                timeout={500} // 动画持续时间
+                classNames="fade" // 动画类名前缀
+                unmountOnExit // 事件完成后卸载组件
+            >
+                <div className="card">
+                    <div className="card-header">
+                        <h3 className="title">{one_time_event_details.event_name}</h3>
+                        <div>
+                            <button
+                                className="delete-button"
+                                onClick={() => onDelete(one_time_event_details.id)}
+                            >
+                                Delete
+                            </button>
+                            <button
+                                className="toggle-button"
+                                onClick={() => setShowDetails(!showDetails)}
+                            >
+                                {showDetails ? "Hide Details" : "Show Details"}
+                            </button>
+                            <button
+                                className="done-button"
+                                onClick={handleDone}
+                                disabled={isDone} // 如果事件已经完成，按钮禁用
+                            >
+                                {isDone ? "Done" : "Mark as Done"}
+                            </button>
+                        </div>
+                    </div>
+                    {showDetails && (
+                        <div>
+                            <p className="detail"><strong>Details:</strong> {one_time_event_details.event_details}</p>
+                            <p className="detail"><strong>Start Date:</strong> {formattedStartDate}</p>
+                            <p className="meta"><strong>Created At:</strong> {formattedCreatedAt}</p>
+                            <p className="history"><strong>History:</strong> {one_time_event_details.event_history}</p>
+                        </div>
+                    )}
                 </div>
-            </div>
-            <p style={styles.detail}><strong>Details:</strong> {one_time_event_details.event_details}</p>
-            <p style={styles.detail}><strong>Start Date:</strong> {formattedStartDate}</p>
-            <p style={styles.meta}><strong>Created At:</strong> {formattedCreatedAt}</p>
-            {showHistory && (
-                <p style={styles.history}><strong>History:</strong> {one_time_event_details.event_history}</p>
-            )}
-        </div>
+            </CSSTransition>
+
+            {/* 固定按钮，点击时滚动到页面底部 */}
+            <button className="scroll-to-bottom-button" onClick={scrollToBottom}>
+                ↓
+            </button>
+        </>
     );
 }
-
-const styles = {
-    card: {
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-        padding: "16px",
-        margin: "16px 0",
-        backgroundColor: "#fff",
-        maxWidth: "400px",
-        position: "relative",
-    },
-    header: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    title: {
-        fontSize: "18px",
-        marginBottom: "8px",
-        color: "#333",
-    },
-    deleteButton: {
-        backgroundColor: "#f44336",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        padding: "8px 12px",
-        cursor: "pointer",
-        fontSize: "14px",
-        marginLeft: "8px",
-        transition: "background-color 0.3s",
-    },
-    toggleButton: {
-        backgroundColor: "#2196f3",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        padding: "8px 12px",
-        cursor: "pointer",
-        fontSize: "14px",
-        transition: "background-color 0.3s",
-        marginLeft: "8px",
-    },
-    detail: {
-        fontSize: "14px",
-        margin: "4px 0",
-        color: "#555",
-    },
-    meta: {
-        fontSize: "12px",
-        margin: "8px 0",
-        color: "#888",
-    },
-    history: {
-        fontSize: "14px",
-        marginTop: "4px",
-        color: "#555",
-    },
-};
 
 export default OneTimeEventDetails;
