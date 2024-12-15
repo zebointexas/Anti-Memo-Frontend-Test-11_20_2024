@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/MemoRecordDetails.css";
 import api from "../api";
 
@@ -6,10 +6,32 @@ function MemoRecordDetails({ memo_record, goToNext }) {
     const [isEditing, setIsEditing] = useState(false);
     const [updated_record_details, setUpdatedRecordDetails] = useState(memo_record.record_details);
     const [showContent, setShowContent] = useState(false);
+    const [timer, setTimer] = useState(0); // 正计时的状态
+    const timerRef = useRef(null); // 保存计时器引用
 
     useEffect(() => {
         setUpdatedRecordDetails(memo_record.record_details);
     }, [memo_record]);
+
+    useEffect(() => {
+        // 页面加载时启动正计时
+        timerRef.current = setInterval(() => {
+            setTimer((prev) => prev + 1); // 每秒递增
+        }, 1000);
+
+        return () => clearInterval(timerRef.current); // 组件卸载时清除计时器
+    }, []);
+
+    const resetTimer = () => {
+        setTimer(0); // 重置为0秒
+    };
+
+    // 格式化计时器为 MM:SS
+    const formatTimer = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+    };
 
     const handleContentChange = (e) => {
         setUpdatedRecordDetails(e.target.value);
@@ -33,6 +55,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
 
     const handleStudyStatusUpdate = (study_status) => (e) => {
         e.preventDefault();
+        resetTimer(); // 重置计时器
         api
             .put(`/api/memo_records/update/study-history/${memo_record.id}/`, { study_status })
             .then((res) => {
@@ -116,6 +139,9 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                     </form>
 
                     <div className="button-container">
+                        <div className="timer-info">
+                            <p>{formatTimer(timer)}</p>
+                        </div>
                         <button type="button" onClick={handleStudyStatusUpdate('Remember')}>
                             Remember
                         </button>

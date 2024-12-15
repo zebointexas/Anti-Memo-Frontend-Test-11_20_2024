@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";  // 导入 useNavigate
 import api from "../api";
 import "../styles/Home.css";
 
-function CreateAMemoRecord() {
+function CreateMemoRecord() {
     const [record_details, setRecord_Details] = useState("");
     const [question, setQuestion] = useState(""); // 新增用于存储“question”的状态
     const [subjectTypes, setSubjectTypes] = useState([]);  // 用于存储从后端获取的科目类型
@@ -112,4 +112,4 @@ function CreateAMemoRecord() {
     );
 }
 
-export default CreateAMemoRecord;
+export default CreateMemoRecord;

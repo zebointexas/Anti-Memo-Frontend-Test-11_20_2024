@@ -2,10 +2,11 @@ import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css";
+import "../styles/Form.css"
 import LoadingIndicator from "./LoadingIndicator";
 
 function LoginForm({ route, method }) {
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -18,33 +19,21 @@ function LoginForm({ route, method }) {
         e.preventDefault();
 
         try {
-            const res = await api.post(route, { username, password });
-
+            const res = await api.post(route, { username, password })
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-
-                // Check if it's the first login by looking for a flag in localStorage
-                const isFirstLogin = !localStorage.getItem("hasLoggedIn");
-
-                if (isFirstLogin) {
-                    // If first login, set a flag so that future logins don't trigger this path
-                    localStorage.setItem("hasLoggedIn", "true");
-                    navigate("/memo-records");
-                } else {
-                    // For subsequent logins, navigate based on the stored redirectUrl
-                    const redirectUrl = localStorage.getItem("redirectUrl") || "/";
-                    localStorage.removeItem("redirectUrl");
-                    navigate(redirectUrl);
-                }
+                // 登录成功后，获取保存的 redirectUrl，如果存在则跳转回原页面
+                const redirectUrl = localStorage.getItem("redirectUrl") || "/";
+                localStorage.removeItem("redirectUrl"); // 清除 redirectUrl
+                navigate(redirectUrl);
             } else {
-                // For registration, navigate to login page
-                navigate("/login");
+                navigate("/login")
             }
         } catch (error) {
-            alert(error);
+            alert(error)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     };
 

@@ -76,8 +76,12 @@ function MemoRecords() {
         } 
     };
 
-    const goToCreate = () => {
-        navigate("/create-a-memo-record");
+    const goToCreateMemoRecord = () => {
+        navigate("/create-memo-record");
+    };
+
+    const goToOneTimeEvents = () => {
+        navigate("/one-time-events");
     };
 
     const refreshData = () => {
@@ -97,6 +101,7 @@ function MemoRecords() {
         <div>
             <div>
                 <h2>Memo Records</h2>
+
                 <p>Records left: {filteredRecords.length - currentIndex}</p>
 
                 <br />
@@ -127,8 +132,14 @@ function MemoRecords() {
             <br />
             <br />
             <div>
-                <button onClick={goToCreate}>Create a Memo Record</button>  
-                <button onClick={goToUpdateStudyScope}>Update Study Scope</button>      
+                <button onClick={goToCreateMemoRecord}>Create a Memo Record</button>  
+                <br />
+                <br />
+                <button onClick={goToOneTimeEvents}>One Time Events</button>  
+                <br />
+                <br />
+                <button onClick={goToUpdateStudyScope}>Update Study Scope</button>   
+                <br />   
             </div>
             
             <br />

@@ -2,13 +2,15 @@ import react from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Login from "./pages/Login"
 import MemoRecords from "./pages/MemoRecords"
-import CreateAMemoRecord from "./pages/CreateAMemoRecord"
+import CreateMemoRecord from "./pages/CreateMemoRecord"
 import Register from "./pages/Register"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import ProtectedRoute from "./components/ProtectedRoute"
-import UpdateSubjectType from "./pages/UpdateSubjectType";
+import UpdateSubjectType from "./pages/UpdateSubjectType"
 import UpdateStudyScope from "./pages/UpdateStudyScope"
+import CreateOneTimeEvent from "./pages/OneTimeEvents"
+import OneTimeEvents from "./pages/OneTimeEvents"
 
 function Logout() {
   localStorage.clear()
@@ -36,7 +38,9 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="/memo-records" element={<MemoRecords />} />
-        <Route path="/create-a-memo-record" element={<CreateAMemoRecord />} />
+        <Route path="/create-memo-record" element={<CreateMemoRecord />} />
+        <Route path="/create-one-time-event" element={<CreateOneTimeEvent />} />
+        <Route path="/one-time-events" element={<OneTimeEvents />} />
         <Route path="/update-subject-type" element={<UpdateSubjectType />} />
         <Route path="/update-study-scope" element={<UpdateStudyScope />} />
         <Route path="*" element={<NotFound />}></Route>
