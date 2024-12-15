@@ -33,6 +33,11 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
         });
     };
 
+    // 高亮样式（当事件是 high importance 时）
+    const cardStyle = one_time_event_details.is_high_importance
+        ? { border: "2px solid #FF6347", backgroundColor: "#FFF8E1" } // 高亮的样式
+        : {};
+
     return (
         <>
             <style>
@@ -152,7 +157,7 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                 classNames="fade" // 动画类名前缀
                 unmountOnExit // 事件完成后卸载组件
             >
-                <div className="card">
+                <div className="card" style={cardStyle}> {/* 应用高亮样式 */}
                     <div className="card-header">
                         <h3 className="title">{one_time_event_details.event_name}</h3>
                         <div>
@@ -181,8 +186,10 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         <div>
                             <p className="detail"><strong>Details:</strong> {one_time_event_details.event_details}</p>
                             <p className="detail"><strong>Start Date:</strong> {formattedStartDate}</p>
-                            <p className="meta"><strong>Created At:</strong> {formattedCreatedAt}</p>
                             <p className="history"><strong>History:</strong> {one_time_event_details.event_history}</p>
+                            <p className="history"><strong>High Importance:</strong> {one_time_event_details.is_high_importance}</p>
+                            <p className="meta"><strong>Created At:</strong> {formattedCreatedAt}</p>
+                            
                         </div>
                     )}
                 </div>

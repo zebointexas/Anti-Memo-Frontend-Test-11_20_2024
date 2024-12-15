@@ -42,7 +42,7 @@ function ViewOneTimeEvents() {
             event_name: eventName,
             event_details: eventDetails || "N/A",
             start_date: formattedStartDate, // 使用格式化后的日期时间
-            is_very_important: isHighImportance,
+            is_high_importance: isHighImportance,
         };
     
         api
