@@ -12,6 +12,7 @@ function MemoRecords() {
     const [searchQuery, setSearchQuery] = useState(""); // state for search query
     const [filteredRecords, setFilteredRecords] = useState([]); // state for filtered records
     const [searchRecords, setSearchRecords] = useState([]); // state for filtered records
+    const [audio, setAudio] = useState(null); // 用于管理音频对象的状态
 
     const [timer, setTimer] = useState(1500); // 默认 25 分钟 (1500 秒)
     const [isTimerRunning, setIsTimerRunning] = useState(false); // 计时器状态
@@ -101,11 +102,15 @@ function MemoRecords() {
     };
 
     const goToCreateMemoRecord = () => {
-        navigate("/create-memo-record");
+        window.open("/create-memo-record", "_blank");
     };
 
     const goToOneTimeEvents = () => {
-        navigate("/one-time-events");
+        window.open("/one-time-events", "_blank");
+    };
+
+    const goToBlog = () => {
+        window.open("/blog", "_blank");
     };
 
     const refreshData = () => {
@@ -116,29 +121,59 @@ function MemoRecords() {
         const validRecord = memo_records.find(record => record.study_scope_id);
         if (validRecord && validRecord.study_scope_id) {
             navigate(`/update-study-scope`, { state: { study_scope_id: validRecord.study_scope_id.id } });
+            // window.open(`/update-study-scope?study_scope_id=${validRecord.study_scope_id.id}`, '_blank');
         } else {
             alert("No valid study_scope_id found.");
         }
     };
 
     const playSound = () => {
-        const audio = new Audio("/123.mp3");
-        audio.play()
-            .then(() => console.log("Audio played successfully"))
+        const newAudio = new Audio("/ring_sound.mp3");
+        newAudio.loop = true; // 设置音频循环播放
+        newAudio.play()
+            .then(() => console.log("Audio is now playing in a loop"))
             .catch((error) => console.error("Audio playback failed:", error));
+        setAudio(newAudio); // 将音频对象存储到状态中
+    };
+
+    const playSound_Music = () => {
+        // 如果有正在播放的音频，先暂停并重置
+        if (audio) {
+            audio.pause(); // 停止当前音频播放
+            audio.currentTime = 0; // 重置播放时间
+        }
+    
+        // 创建新音频对象并播放
+        const newAudio = new Audio("/worship1.mp3");
+        newAudio.loop = true; // 设置音频循环播放
+        newAudio.play()
+            .then(() => console.log("Audio is now playing in a loop"))
+            .catch((error) => console.error("Audio playback failed:", error));
+    
+        setAudio(newAudio); // 将新音频对象存储到状态中
+    };
+
+    const pauseSound_Music = () => {
+        if (audio) {
+            audio.pause(); // 停止音频播放
+        }
+    };
+ 
+    const pauseSound = () => {
+        if (audio) {
+            audio.pause(); // 停止音频播放
+            setAudio(null); // 清除音频对象状态
+        }
     };
 
     const startTimer = () => {
         setIsTimerRunning(true);
     };
-
-    const pauseTimer = () => {
-        setIsTimerRunning(false);
-    };
-
+ 
     const resetTimer = () => {
-        setTimer(1);
+        setTimer(1500);
         setIsTimerRunning(false);
+        pauseSound(); // 确保在重置时停止音频播放
     };
 
     const formatTime = (seconds) => {
@@ -187,11 +222,13 @@ function MemoRecords() {
                 <button onClick={goToCreateMemoRecord}>Create a Memo Record</button>  
                 <br />
                 <br />
-                <button onClick={goToOneTimeEvents}>One Time Events</button>  
-                <br />
-                <br />
                 <button onClick={goToUpdateStudyScope}>Update Study Scope</button>   
+                <br />
+                <br />
+                <button onClick={goToOneTimeEvents}>One Time Events</button>  
                 <br />   
+                <br />
+                <button onClick={goToBlog}>Blog</button>   
             </div>
             
             <br />
@@ -233,10 +270,14 @@ function MemoRecords() {
                 <button onClick={startTimer} disabled={isTimerRunning}>
                     Start
                 </button>
-                <button onClick={pauseTimer} disabled={!isTimerRunning}>
-                    Pause
-                </button>
                 <button onClick={resetTimer}>Reset</button>
+
+                <br />
+                <br />
+                <br />
+
+                <button onClick={playSound_Music}>Play Music</button>
+                <button onClick={pauseSound_Music}>Pause Music</button>
             </div>
         </div>
     );

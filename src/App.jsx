@@ -11,6 +11,7 @@ import UpdateSubjectType from "./pages/UpdateSubjectType"
 import UpdateStudyScope from "./pages/UpdateStudyScope"
 import CreateOneTimeEvent from "./pages/OneTimeEvents"
 import OneTimeEvents from "./pages/OneTimeEvents"
+import Blog from "./pages/Blog"
 
 function Logout() {
   localStorage.clear()
@@ -40,6 +41,7 @@ function App() {
         <Route path="/memo-records" element={<MemoRecords />} />
         <Route path="/create-memo-record" element={<CreateMemoRecord />} />
         <Route path="/create-one-time-event" element={<CreateOneTimeEvent />} />
+        <Route path="/blog" element={<Blog />} />
         <Route path="/one-time-events" element={<OneTimeEvents />} />
         <Route path="/update-subject-type" element={<UpdateSubjectType />} />
         <Route path="/update-study-scope" element={<UpdateStudyScope />} />

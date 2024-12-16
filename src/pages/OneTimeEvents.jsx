@@ -13,11 +13,11 @@ function ViewOneTimeEvents() {
     const navigate = useNavigate(); // 获取 navigate 函数
 
     useEffect(() => {
-        getOneTimeEvents();
+        getOneTimeEvent();
         setStartDate(new Date().toISOString().slice(0, 16));
     }, []);
 
-    const getOneTimeEvents = () => {
+    const getOneTimeEvent = () => {
         api
             .get("/api/one_time_events_list/") // 修正 API 路径
             .then((res) => res.data)
@@ -53,7 +53,7 @@ function ViewOneTimeEvents() {
                     setEventDetails("");
                     setStartDate(new Date().toISOString().slice(0, 10)); // 重置为当前日期
                     setIsHighImportance(false);
-                    getOneTimeEvents();
+                    getOneTimeEvent();
                 } else {
                     console.log("Failed to create OneTimeEvent.");
                 }
@@ -70,7 +70,7 @@ function ViewOneTimeEvents() {
             .then((res) => {
                 if (res.status === 204) alert("One-time-event deleted!   id: " + id);
                 else alert("Failed to delete One Time Event.");
-                getOneTimeEvents();
+                getOneTimeEvent();
             })
             .catch((error) => alert(error));
     };
@@ -80,7 +80,7 @@ function ViewOneTimeEvents() {
             .patch(`/api/one_time_event/update/${id}/`, { is_done: true }) // 假设使用 PATCH 请求
             .then((res) => {
                 if (res.status === 200) {
-                    getOneTimeEvents(); // 更新事件列表
+                    getOneTimeEvent(); // 更新事件列表
                 }
             })
             .catch((err) => {
