@@ -12,11 +12,35 @@ function MemoRecords() {
     const [searchQuery, setSearchQuery] = useState(""); // state for search query
     const [filteredRecords, setFilteredRecords] = useState([]); // state for filtered records
     const [searchRecords, setSearchRecords] = useState([]); // state for filtered records
+
+    const [timer, setTimer] = useState(1500); // 默认 25 分钟 (1500 秒)
+    const [isTimerRunning, setIsTimerRunning] = useState(false); // 计时器状态
+
     const navigate = useNavigate();
+
+
 
     useEffect(() => {
         getMemoRecords();
     }, [refreshKey]);
+
+    useEffect(() => {
+        let timerInterval;
+        if (isTimerRunning && timer > 0) {
+            timerInterval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        } else if (timer === 0) {
+            clearInterval(timerInterval);
+            playSound();
+            setTimeout(() => {
+                alert("休息时间结束，请返回工作！");
+                setTimer(1500); // 重置 25 分钟
+                setIsTimerRunning(false);
+            }, 300000); // 5 分钟后提示
+        }
+        return () => clearInterval(timerInterval);
+    }, [isTimerRunning, timer]);
 
     const getMemoRecords = () => {
         api
@@ -97,6 +121,34 @@ function MemoRecords() {
         }
     };
 
+    const playSound = () => {
+        const audio = new Audio("/123.mp3");
+        audio.play()
+            .then(() => console.log("Audio played successfully"))
+            .catch((error) => console.error("Audio playback failed:", error));
+    };
+
+    const startTimer = () => {
+        setIsTimerRunning(true);
+    };
+
+    const pauseTimer = () => {
+        setIsTimerRunning(false);
+    };
+
+    const resetTimer = () => {
+        setTimer(1);
+        setIsTimerRunning(false);
+    };
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+            .toString()
+            .padStart(2, "0")}`;
+    };
+
     return (
         <div>
             <div>
@@ -175,6 +227,17 @@ function MemoRecords() {
                     </ul>
                 </div>
             )}
+
+            <div>
+                <h3>Timer: {formatTime(timer)}</h3>
+                <button onClick={startTimer} disabled={isTimerRunning}>
+                    Start
+                </button>
+                <button onClick={pauseTimer} disabled={!isTimerRunning}>
+                    Pause
+                </button>
+                <button onClick={resetTimer}>Reset</button>
+            </div>
         </div>
     );
 }

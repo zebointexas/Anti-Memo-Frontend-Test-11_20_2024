@@ -7,7 +7,7 @@ function CreateMemoRecord() {
     const [record_details, setRecord_Details] = useState("");
     const [question, setQuestion] = useState(""); // 新增用于存储“question”的状态
     const [subjectTypes, setSubjectTypes] = useState([]);  // 用于存储从后端获取的科目类型
-    const [subject_type, setSelectedSubjectType] = useState(""); // 用于存储用户选择的科目类型
+    const [subject_type, setSelectedSubjectType] = useState("BQ"); // 默认选择 "BQ"
     const navigate = useNavigate();  // 获取 navigate 函数
 
     // 在组件加载时请求科目类型
@@ -83,8 +83,6 @@ function CreateMemoRecord() {
                     onChange={(e) => setRecord_Details(e.target.value)}
                 ></textarea>
                 <br />
-
-
 
                 <label htmlFor="subject-type">Subject Type:</label>
                 <select

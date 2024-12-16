@@ -67,7 +67,7 @@ function UpdateStudyScope() {
                     setTimeout(() => {
                         setShowToast(false); // 2秒后隐藏提示框
                         navigate(-1); // 返回上一页
-                    }, 2000);
+                    }, 1000);
                 }
             })
             .catch((err) => {
