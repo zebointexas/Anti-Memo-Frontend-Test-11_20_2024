@@ -1,12 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";  // 导入 useNavigate
 import api from "../api";
 
 function CreateBlog() {
     const [blog_name, setTitle] = useState("");  // 存储博客标题
     const [blog_content, setContent] = useState("");  // 存储博客内容
-    const [isPublished, setIsPublished] = useState(false);  // 是否发布
+    const [blogs, setBlogs] = useState([]);  // 存储所有博客列表
+    const [loading, setLoading] = useState(true);  // 加载状态
+    const [error, setError] = useState(null);  // 错误状态
     const navigate = useNavigate();  // 获取 navigate 函数
+
+    // 获取所有博客数据
+    useEffect(() => {
+        api
+            .get("/api/blog/list/")  // 请求博客列表的 API
+            .then((res) => {
+                if (res.status === 200) {
+                    setBlogs(res.data);  // 设置博客列表
+                    setLoading(false);  // 更新加载状态
+                } else {
+                    setError("Failed to load blogs.");
+                    setLoading(false);
+                }
+            })
+            .catch((err) => {
+                setError("Failed to load blogs.");
+                setLoading(false);
+            });
+    }, []);
 
     // 提交表单
     const createBlog = (e) => {
@@ -29,6 +50,8 @@ function CreateBlog() {
                 if (res.status === 201) {
                     console.log("Blog was created!");
                     alert("Blog was created!");
+                    // 在博客创建后重新获取博客列表
+                    setBlogs([...blogs, res.data]);
                 } else {
                     console.log("Failed to create Blog.");
                 }
@@ -64,6 +87,25 @@ function CreateBlog() {
                 <br />
                 <input type="submit" value="Submit" />
             </form>
+
+            {/* 显示加载状态 */}
+            {loading && <p>Loading blogs...</p>}
+
+            {/* 显示错误信息 */}
+            {error && <p>{error}</p>}
+
+            {/* 显示博客列表 */}
+            <div>
+                <h3>All Blogs</h3>
+                <ul>
+                    {blogs.map((blog) => (
+                        <li key={blog.id}>
+                            <h4>{blog.blog_name}</h4>
+                            <p>{blog.blog_content}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
 
             <style>
                 {`
@@ -103,6 +145,34 @@ function CreateBlog() {
 
                 form input[type="submit"]:hover {
                     background-color: #45a049;
+                }
+
+                div {
+                    margin-top: 20px;
+                }
+
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+                }
+
+                li {
+                    background-color: #f9f9f9;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 8px;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
+
+                h4 {
+                    margin: 0;
+                    font-size: 18px;
+                    color: #333;
+                }
+
+                p {
+                    margin: 5px 0 0;
+                    color: #555;
                 }
                 `}
             </style>
