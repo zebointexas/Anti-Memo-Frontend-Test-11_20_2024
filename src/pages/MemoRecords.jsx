@@ -14,7 +14,7 @@ function MemoRecords() {
     const [searchRecords, setSearchRecords] = useState([]); // state for filtered records
     const [audio, setAudio] = useState(null); // 用于管理音频对象的状态
 
-    const [timer, setTimer] = useState(1500); // 默认 25 分钟 (1500 秒)
+    const [timer, setTimer] = useState(1); // 默认 25 分钟 (1500 秒)
     const [isTimerRunning, setIsTimerRunning] = useState(false); // 计时器状态
 
     const navigate = useNavigate();
@@ -128,7 +128,7 @@ function MemoRecords() {
     };
 
     const playSound = () => {
-        const newAudio = new Audio("/ring_sound.mp3");
+        const newAudio = new Audio("/tele.mp3");
         newAudio.loop = true; // 设置音频循环播放
         newAudio.play()
             .then(() => console.log("Audio is now playing in a loop"))
@@ -229,21 +229,32 @@ function MemoRecords() {
                 <br />   
                 <br />
                 <button onClick={goToBlog}>Blog</button>   
+
+
             </div>
+
+            <br />
+            <br />
+            <br />
+            <input
+                        type="text"
+                        placeholder="Search for records"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={handleKeyDown} // Add the event listener for Enter key
+                        className="search-input"
+                    />
             
             <br />
             <br />
-
-            <div className="center-container">
-                <input
-                    type="text"
-                    placeholder="Search for records"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleKeyDown} // Add the event listener for Enter key
-                    className="search-input"
-                />
-            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+ 
+ 
             <br />
             <br />
             {/* Display the filtered search results below currentRecord */}

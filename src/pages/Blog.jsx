@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";  // 导入 useNavigate
 import api from "../api";
 
 function CreateBlog() {
@@ -8,15 +7,18 @@ function CreateBlog() {
     const [blogs, setBlogs] = useState([]);  // 存储所有博客列表
     const [loading, setLoading] = useState(true);  // 加载状态
     const [error, setError] = useState(null);  // 错误状态
-    const navigate = useNavigate();  // 获取 navigate 函数
 
     // 获取所有博客数据
     useEffect(() => {
         api
-            .get("/api/blog/list/")  // 请求博客列表的 API
+            .get("/api/blog_list/")  // 请求博客列表的 API
             .then((res) => {
                 if (res.status === 200) {
-                    setBlogs(res.data);  // 设置博客列表
+                    const blogsWithState = res.data.map((blog) => ({
+                        ...blog,
+                        isVisible: false, // 每条记录初始内容为隐藏状态
+                    }));
+                    setBlogs(blogsWithState);  // 设置博客列表
                     setLoading(false);  // 更新加载状态
                 } else {
                     setError("Failed to load blogs.");
@@ -28,6 +30,15 @@ function CreateBlog() {
                 setLoading(false);
             });
     }, []);
+
+    // 切换内容显示状态
+    const toggleContent = (id) => {
+        setBlogs((prevBlogs) =>
+            prevBlogs.map((blog) =>
+                blog.id === id ? { ...blog, isVisible: !blog.isVisible } : blog
+            )
+        );
+    };
 
     // 提交表单
     const createBlog = (e) => {
@@ -51,12 +62,20 @@ function CreateBlog() {
                     console.log("Blog was created!");
                     alert("Blog was created!");
                     // 在博客创建后重新获取博客列表
-                    setBlogs([...blogs, res.data]);
+                    setBlogs([...blogs, { ...res.data, isVisible: false }]);
                 } else {
                     console.log("Failed to create Blog.");
                 }
             })
             .catch((err) => alert(err));
+    };
+
+    // 将文本中的 URL 转换为超链接
+    const convertLinksToHtml = (text) => {
+        const urlPattern = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlPattern, (url) => {
+            return `<a href="${url}" target="_blank" style="color: #007BFF; text-decoration: none;">${url}</a>`;
+        });
     };
 
     return (
@@ -95,13 +114,46 @@ function CreateBlog() {
             {error && <p>{error}</p>}
 
             {/* 显示博客列表 */}
+
+            <p><a href="https://photos.google.com/u/3/albums" target="_blank" rel="noopener noreferrer">https://photos.google.com/u/3/albums</a></p>
+
             <div>
                 <h3>All Blogs</h3>
                 <ul>
                     {blogs.map((blog) => (
-                        <li key={blog.id}>
+                        <li
+                            key={blog.id}
+                            style={{
+                                backgroundColor: blog.id % 2 === 0 ? "#f9f9f9" : "#e6f7ff",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                borderRadius: "8px",
+                                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+                            }}
+                        >
                             <h4>{blog.blog_name}</h4>
-                            <p>{blog.blog_content}</p>
+                            <button
+                                onClick={() => toggleContent(blog.id)}
+                                style={{
+                                    margin: "10px 0",
+                                    padding: "5px 10px",
+                                    backgroundColor: "#007BFF",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                {blog.isVisible ? "Hide Content" : "Show Content"}
+                            </button>
+                            {blog.isVisible && (
+                                <p
+                                    style={{ whiteSpace: "pre-wrap" }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: convertLinksToHtml(blog.blog_content),
+                                    }}
+                                />
+                            )}
                         </li>
                     ))}
                 </ul>
@@ -129,8 +181,8 @@ function CreateBlog() {
                 }
 
                 form textarea {
-                    height: 700px; /* 设置合适的高度 */
-                    resize: vertical; /* 允许用户垂直调整 */
+                    height: 700px;
+                    resize: vertical;
                 }
 
                 form input[type="submit"] {
@@ -157,13 +209,9 @@ function CreateBlog() {
                 }
 
                 li {
-                    background-color: #f9f9f9;
-                    padding: 10px;
-                    margin-bottom: 10px;
-                    border-radius: 8px;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    transition: all 0.2s;
                 }
-
+                    
                 h4 {
                     margin: 0;
                     font-size: 18px;

@@ -18,6 +18,20 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
         { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
     );
 
+    const renderDetailsWithLinks = (text) => {
+        // 正则表达式匹配链接（HTTP/HTTPS）
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+    
+        // 将匹配的链接替换为超链接
+        const convertedText = text.replace(
+            urlRegex,
+            (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        );
+    
+        return { __html: convertedText }; // 返回 HTML 格式
+    };
+    
+
     // 调试：检查按钮点击后是否正确更新状态
     const handleDone = () => {
         console.log("Marking as done..."); // 调试信息
@@ -53,7 +67,7 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         padding: 16px;
                         margin: 16px auto;
                         background-color: #fff;
-                        max-width: 500px;
+                        max-width: 700px;
                         width: 100%;
                         position: relative;
                     }
@@ -163,7 +177,14 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         <div>
                             <button
                                 className="delete-button"
-                                onClick={() => onDelete(one_time_event_details.id)}
+                                onClick={() => {
+                                    const confirmDelete = window.confirm(
+                                        `Are you sure you want to delete "${one_time_event_details.event_name}?"`
+                                    );
+                                    if (confirmDelete) {
+                                        onDelete(one_time_event_details.id); // 调用父组件的删除方法
+                                    }
+                                }}
                             >
                                 Delete
                             </button>
@@ -184,10 +205,12 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                     </div>
                     {showDetails && (
                         <div>
-                            <p className="detail"><strong>Details:</strong> {one_time_event_details.event_details}</p>
+                            <p className="detail">
+                                <strong>Details:</strong>
+                                <span dangerouslySetInnerHTML={renderDetailsWithLinks(one_time_event_details.event_details)} />
+                            </p>
                             <p className="detail"><strong>Start Date:</strong> {formattedStartDate}</p>
-                            <p className="history"><strong>History:</strong> {one_time_event_details.event_history}</p>
-                            <p className="history"><strong>High Importance:</strong> {one_time_event_details.is_high_importance}</p>
+                            <p className="history"><strong>History:</strong> {one_time_event_details.event_history}</p>                        
                             <p className="meta"><strong>Created At:</strong> {formattedCreatedAt}</p>
                             
                         </div>
