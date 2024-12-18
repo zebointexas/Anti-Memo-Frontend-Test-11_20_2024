@@ -161,67 +161,83 @@ function CreateBlog() {
 
             <style>
                 {`
-                form {
-                    background-color: #fff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    max-width: 1250px;
-                    margin: auto;
-                }
 
-                form input[type="text"],
-                form textarea {
-                    width: 100%;
-                    padding: 10px;
-                    font-size: 16px;
-                    border-radius: 8px;
-                    border: 1px solid #ccc;
-                    box-sizing: border-box;
-                }
+                    /* Styles for the form section */
+                    form {
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        max-width: 1250px; /* 最后的最大宽度 */
+                        margin: auto;
+                    }
 
-                form textarea {
-                    height: 700px;
-                    resize: vertical;
-                }
+                    form h2 {
+                        color: #333;
+                        font-size: 24px;
+                        margin-bottom: 20px;
+                    }
 
-                form input[type="submit"] {
-                    font-size: 16px;
-                    padding: 10px 20px;
-                    background-color: #4CAF50;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                }
+                    form label {
+                        font-weight: bold;
+                        margin-top: 10px;
+                    }
 
-                form input[type="submit"]:hover {
-                    background-color: #45a049;
-                }
+                    form input,
+                    form textarea {
+                        width: 100%;
+                        padding: 10px;
+                        margin: 8px 0 16px;
+                        border: 1px solid #ccc;
+                        border-radius: 8px; /* 保持一致的圆角 */
+                        box-sizing: border-box;
+                        font-size: 16px; /* 保持一致的字体大小 */
+                    }
 
-                div {
-                    margin-top: 20px;
-                }
+                    form textarea {
+                        height: 700px; /* 高度定义 */
+                        resize: vertical; /* 允许垂直调整大小 */
+                    }
 
-                ul {
-                    list-style-type: none;
-                    padding: 0;
-                }
+                    form input[type="submit"] {
+                        font-size: 16px;
+                        padding: 10px 20px;
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
 
-                li {
-                    transition: all 0.2s;
-                }
-                    
-                h4 {
-                    margin: 0;
-                    font-size: 18px;
-                    color: #333;
-                }
+                    form input[type="submit"]:hover {
+                        background-color: #45a049;
+                    }
 
-                p {
-                    margin: 5px 0 0;
-                    color: #555;
-                }
+                    div {
+                        margin-top: 20px;
+                    }
+
+                    ul {
+                        list-style-type: none;
+                        padding: 0;
+                    }
+
+                    li {
+                        transition: all 0.2s;
+                    }
+
+                    h4 {
+                        margin: 0;
+                        font-size: 18px;
+                        color: #333;
+                    }
+
+                    p {
+                        margin: 5px 0 0;
+                        color: #555;
+                    }
+
+    
                 `}
             </style>
         </div>

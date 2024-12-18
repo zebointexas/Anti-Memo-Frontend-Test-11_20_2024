@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import "../styles/Home.css";
 
 function UpdateSubjectType() {
     const [record_details, setRecord_Details] = useState("");

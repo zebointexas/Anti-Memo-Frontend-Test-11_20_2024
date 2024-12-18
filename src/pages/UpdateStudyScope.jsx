@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";  // 引入 useLocation 和 useNavigate
 import api from "../api";
-import "../styles/Home.css";
 
 function UpdateStudyScope() {
     const [subjectTypes, setSubjectTypes] = useState([]);  // For storing fetched subject types

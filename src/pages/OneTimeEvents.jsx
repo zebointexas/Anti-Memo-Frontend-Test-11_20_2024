@@ -91,7 +91,8 @@ function ViewOneTimeEvents() {
 
     return (
         <div>
-            <h2>One-Time Events</h2>
+            <h2 style={styles.heading}>One-Time Events</h2>
+
             {/* 条件渲染：如果有事件，则显示列表 */}
             {oneTimeEvents.length > 0 ? (
                 oneTimeEvents.map((event) => (
@@ -106,9 +107,8 @@ function ViewOneTimeEvents() {
                 <p>No one-time events found.</p>
             )}
 
-            <form onSubmit={createOneTimeEvent}>
-                <label htmlFor="event_name">Event Name:</label>
-                <br />
+            <form onSubmit={createOneTimeEvent} style={styles.form}>
+                <label htmlFor="event_name" style={styles.label}>Event Name:</label>
                 <input
                     type="text"
                     id="event_name"
@@ -116,87 +116,106 @@ function ViewOneTimeEvents() {
                     required
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
+                    style={styles.input}
                 />
-                <br />
-
-                <label htmlFor="event_details">Event Details:</label>
-                <br />
+                
+                <label htmlFor="event_details" style={styles.label}>Event Details:</label>
                 <textarea
                     id="event_details"
                     name="event_details"
                     value={eventDetails}
                     onChange={(e) => setEventDetails(e.target.value)}
+                    style={styles.textarea}
                 />
-                <br />
-
-                <label htmlFor="start_date">Start Date:</label>
-                <br />
+                
+                <label htmlFor="start_date" style={styles.label}>Start Date:</label>
                 <input
-                    type="date" // 只需要用户选择日期
+                    type="date"
                     id="start_date"
                     name="start_date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
+                    style={styles.input}
                 />
-                <br />
-                <br />
-
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <label htmlFor="is_very_important" style={{ margin: 0, lineHeight: "normal" }}>
-                        High Importance?
-                    </label>
+                
+                <div style={styles.checkboxContainer}>
+                    <label htmlFor="is_very_important" style={styles.checkboxLabel}>High Importance?</label>
                     <input
                         type="checkbox"
                         id="is_very_important"
                         checked={isHighImportance}
                         onChange={() => setIsHighImportance(!isHighImportance)}
-                        style={{
-                            width: "20px",
-                            height: "20px",
-                            cursor: "pointer",
-                            margin: 0,
-                            verticalAlign: "middle",
-                        }}
+                        style={styles.checkbox}
                     />
                 </div>
 
-                <br />
-                <br />
-                <input type="submit" value="Create An One Time Event" />
+                <input type="submit" value="Create An One Time Event" style={styles.submitButton} />
             </form>
-
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />     
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />            
         </div>
     );
 }
 
-export default ViewOneTimeEvents; 
+const styles = {
+    heading: {
+        textAlign: "center",
+        color: "#333",
+        marginBottom: "20px",
+    },
+    form: {
+        backgroundColor: "#fff",
+        padding: "20px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        maxWidth: "600px",
+        margin: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px",
+    },
+    label: {
+        fontWeight: "bold",
+        fontSize: "16px",
+    },
+    input: {
+        padding: "10px",
+        fontSize: "16px",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        boxSizing: "border-box",
+    },
+    textarea: {
+        padding: "10px",
+        fontSize: "16px",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        boxSizing: "border-box",
+        minHeight: "100px",
+        resize: "vertical",
+    },
+    checkboxContainer: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+    },
+    checkboxLabel: {
+        fontSize: "16px",
+        margin: 0,
+    },
+    checkbox: {
+        width: "20px",
+        height: "20px",
+        cursor: "pointer",
+    },
+    submitButton: {
+        padding: "10px 20px",
+        fontSize: "16px",
+        backgroundColor: "#4CAF50",
+        color: "white",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+        marginTop: "20px",
+    },
+};
+
+export default ViewOneTimeEvents;
