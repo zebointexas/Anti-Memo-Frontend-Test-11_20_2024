@@ -276,7 +276,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                         )}
 
                     <div className="reference-info">
-                        <p>MemoRecord ID: {memo_record.id}</p>
+                        <p>ID: {memo_record.id}</p>
                         {/* <p>Study History ID: {memo_record.study_history_id.id}</p> */}
                         {/* <p>
                             Last Study Time:&nbsp;&nbsp;&nbsp;
