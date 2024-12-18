@@ -109,52 +109,103 @@ function CreateMemoRecord() {
 
             <style>
                 {`
-                    /* Styles for the form section */
+                    /* 样式优化：表单部分 */
                     form {
-                        background-color: #fff;
-                        padding: 20px;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                        max-width: 500px;
+                        background-color: #f9f9f9;
+                        padding: 30px;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                        max-width: 600px;
                         margin: auto;
+                        font-family: 'Arial', sans-serif;
                     }
-                    
+
                     form h2 {
                         color: #333;
-                        font-size: 24px;
+                        font-size: 28px;
                         margin-bottom: 20px;
+                        text-align: center;
+                        font-weight: 600;
                     }
-                    
+
                     form label {
-                        font-weight: bold;
-                        margin-top: 10px;
+                        color: #555;
+                        font-size: 16px;
+                        font-weight: 500;
+                        margin-top: 12px;
                     }
-                    
+
                     form input,
                     form textarea {
                         width: 100%;
-                        padding: 8px;
-                        margin: 8px 0 16px;
-                        border: 1px solid #ccc;
-                        border-radius: 4px;
+                        padding: 12px 16px;
+                        margin: 8px 0 20px;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
                         box-sizing: border-box;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
                     }
-                    
+
+                    /* 特别针对 question 和 record details 输入框，增加高度和宽度 */                    
+                    form textarea {
+                        height: 50px; /* 增加高度 */
+                    }
+
+                    form textarea {
+                        height: 150px; /* 更高的文本区域 */
+                    }
+
+                    /* 聚焦效果 */
+                    form input:focus,
+                    form textarea:focus {
+                        border-color: #007bff;
+                        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+                    }
+
                     form input[type="submit"] {
                         background-color: #007bff;
                         color: white;
-                        padding: 10px 20px;
+                        padding: 12px 24px;
                         border: none;
-                        border-radius: 4px;
+                        border-radius: 8px;
                         cursor: pointer;
-                        font-size: 16px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        transition: background-color 0.3s ease;
                     }
-                    
+
                     form input[type="submit"]:hover {
                         background-color: #0056b3;
                     }
+
+                    form input[type="submit"]:active {
+                        background-color: #004085;
+                    }
+
+                    /* 响应式：小屏幕调整 */
+                    @media (max-width: 600px) {
+                        form {
+                            padding: 20px;
+                        }
+
+                        form h2 {
+                            font-size: 24px;
+                        }
+
+                        form input,
+                        form textarea {
+                            padding: 10px;
+                        }
+
+                        form input[type="submit"] {
+                            font-size: 16px;
+                            padding: 10px 20px;
+                        }
+                    }
                 `}
             </style>
+
         </div>        
     );
 }

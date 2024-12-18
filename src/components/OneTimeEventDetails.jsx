@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { CSSTransition } from "react-transition-group"; // 导入 CSSTransition
 
-function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
+function OneTimeEventDetails({ one_time_event_details, onDelete, onDone, onUpdateEventDetails, onPostpone }) {
     const [showDetails, setShowDetails] = useState(false); // 控制是否显示事件详情，初始值为 false
     const [isDone, setIsDone] = useState(one_time_event_details.is_done); // 用于记录事件是否已完成
+    const [isEditing, setIsEditing] = useState(false); // 控制是否进入编辑状态
+    const [updatedDetails, setUpdatedDetails] = useState(one_time_event_details.event_details); // 存储编辑后的详情内容
 
     if (!one_time_event_details) {
         return <p>No event details available.</p>;
@@ -15,7 +17,7 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
     );
     const formattedStartDate = new Date(one_time_event_details.start_date).toLocaleString(
         "en-US",
-        { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
+        {month: "short", day: "numeric"}
     );
 
     const renderDetailsWithLinks = (text) => {
@@ -30,20 +32,33 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
     
         return { __html: convertedText }; // 返回 HTML 格式
     };
-    
 
-    // 调试：检查按钮点击后是否正确更新状态
     const handleDone = () => {
         console.log("Marking as done..."); // 调试信息
-        onDone(one_time_event_details.id); // 调用父组件的 onDone
+        onDone(one_time_event_details.id, true); // 调用父组件的 onDone
         setIsDone(true); // 更新状态为已完成
     };
 
-    // 滚动到页面底部
+    const handleSaveEdit = () => {
+        // 这里可以调用API或者其他方式保存更新的内容
+        onUpdateEventDetails(one_time_event_details.id, updatedDetails);
+        setIsEditing(false); // 退出编辑模式
+    };
+
+    const handleEditChange = (e) => {
+        setUpdatedDetails(e.target.value); // 更新编辑内容
+    };
+
+    const handlePostpone = () => {
+        const newStartDate = new Date(one_time_event_details.start_date);
+        newStartDate.setDate(newStartDate.getDate() + 3); // 将事件推迟3天
+        onPostpone(one_time_event_details.id, newStartDate); // 调用父组件的 onPostpone
+    };
+
     const scrollToBottom = () => {
         window.scrollTo({
             top: document.documentElement.scrollHeight,
-            behavior: "auto", // 平滑滚动
+            behavior: "smooth", // 平滑滚动
         });
     };
 
@@ -79,7 +94,6 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         width: 100%;
                     }
 
-                    /* 动画样式 */
                     .fade-enter {
                         opacity: 0;
                     }
@@ -101,7 +115,7 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         color: #333;
                     }
 
-                    .delete-button, .toggle-button, .done-button {
+                    .delete-button, .toggle-button, .done-button, .save-button, .postpone-button {
                         background-color: #4CAF50;
                         color: #fff;
                         border: none;
@@ -125,6 +139,10 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         background-color: #4CAF50;
                     }
 
+                    .save-button {
+                        background-color: #FF9800;
+                    }
+
                     .done-button:disabled {
                         background-color: #9e9e9e;
                     }
@@ -145,6 +163,17 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         margin-top: 4px;
                     }
 
+                    .edit-textarea {
+                        width: 100%;
+                        min-height: 100px;
+                        padding: 10px;
+                        font-size: 14px;
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        margin-top: 10px;
+                        resize: vertical;
+                    }
+
                     /* 固定按钮样式 */
                     .scroll-to-bottom-button {
                         display: flex;
@@ -162,6 +191,15 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                         font-size: 50px;
                         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
                     }
+
+                    .postpone-button {
+                        background-color: #FF5722; /* 推迟按钮颜色 */
+                    }
+
+                    .pre-wrap-text {
+                        white-space: pre-wrap;
+                    }
+
                 `}
             </style>
 
@@ -173,8 +211,58 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
             >
                 <div className="card" style={cardStyle}> {/* 应用高亮样式 */}
                     <div className="card-header">
-                        <h3 className="title">{one_time_event_details.event_name}</h3>
+                        <h3 className="title">{one_time_event_details.event_name} <span> &nbsp; | &nbsp;  {formattedStartDate}</span></h3>
                         <div>
+                            <button
+                                className="postpone-button"
+                                onClick={handlePostpone}
+                                disabled={isDone} // 如果事件已经完成，按钮禁用
+                            >
+                                Postpone
+                            </button>
+
+                            <button
+                                className="toggle-button"
+                                onClick={() => setShowDetails(!showDetails)}
+                            >
+                                {showDetails ? "Less" : "More"}
+                            </button>
+
+                            <button
+                                className="done-button"
+                                onClick={handleDone}
+                                disabled={isDone} // 如果事件已经完成，按钮禁用
+                            >
+                                {isDone ? "Already Done" : "Done"}
+                            </button>
+                        </div>
+                    </div>
+                    {showDetails && (
+                        <div>
+                            {isEditing ? (
+                                <div>
+                                    <textarea
+                                        className="edit-textarea"
+                                        value={updatedDetails}
+                                        onChange={handleEditChange}
+                                    />
+                                    <button className="save-button" onClick={handleSaveEdit}>
+                                        Save
+                                    </button>
+                                </div>
+                            ) : (
+                                <p className="pre-wrap-text" >
+                                    <span dangerouslySetInnerHTML={renderDetailsWithLinks(updatedDetails)} />                                    
+                                </p>
+                            )}
+                            {/* <p className="detail"><strong>Due: </strong> {formattedStartDate}</p> */}
+                            {/* <p className="history"><strong>History:</strong> {one_time_event_details.event_history}</p>                         */}
+                            {/* <p className="meta"><strong>Created At:</strong> {formattedCreatedAt}</p> */}
+                            {!isEditing && (
+                                <button className="save-button" onClick={() => setIsEditing(true)}>
+                                    Edit Details
+                                </button>
+                            )}
                             <button
                                 className="delete-button"
                                 onClick={() => {
@@ -187,32 +275,7 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone }) {
                                 }}
                             >
                                 Delete
-                            </button>
-                            <button
-                                className="toggle-button"
-                                onClick={() => setShowDetails(!showDetails)}
-                            >
-                                {showDetails ? "Hide Details" : "Show Details"}
-                            </button>
-                            <button
-                                className="done-button"
-                                onClick={handleDone}
-                                disabled={isDone} // 如果事件已经完成，按钮禁用
-                            >
-                                {isDone ? "Done" : "Mark as Done"}
-                            </button>
-                        </div>
-                    </div>
-                    {showDetails && (
-                        <div>
-                            <p className="detail">
-                                <strong>Details:</strong>
-                                <span dangerouslySetInnerHTML={renderDetailsWithLinks(one_time_event_details.event_details)} />
-                            </p>
-                            <p className="detail"><strong>Start Date:</strong> {formattedStartDate}</p>
-                            <p className="history"><strong>History:</strong> {one_time_event_details.event_history}</p>                        
-                            <p className="meta"><strong>Created At:</strong> {formattedCreatedAt}</p>
-                            
+                            </button>    
                         </div>
                     )}
                 </div>

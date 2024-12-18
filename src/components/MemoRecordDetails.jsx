@@ -212,11 +212,21 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                         font-size: 18px;
                     }
 
+                    /* 为显示答案的区域添加样式 */
                     .answer-text {
-                        white-space: pre-wrap;
-                        word-wrap: break-word;
-                        overflow-wrap: break-word;
+                        white-space: pre-wrap; /* 保证文本换行，保留换行符 */
+                        word-wrap: break-word; /* 保证长单词自动换行 */
+                        overflow-wrap: break-word; /* 确保长单词换行，不会溢出 */
+                        
+                        padding: 15px; /* 增加内边距，确保文本与边框之间有空隙 */
+                        border: 2px solid #ddd; /* 给文本区域添加边框 */
+                        border-radius: 8px; /* 圆角效果 */
+                        background-color: #f9f9f9; /* 设置背景颜色 */
+                        margin-top: 10px; /* 给顶部增加间距 */
+                        font-size: 16px; /* 调整字体大小，使其更易读 */
+                        box-sizing: border-box; /* 确保边框和内边距不影响宽度计算 */
                     }
+
 
                     textarea {
                         width: 100%;
@@ -224,6 +234,17 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                         padding: 5px;
                         box-sizing: border-box;
                         resize: vertical; /* 允许垂直方向调整大小 */
+                    }
+
+                    /* 为 reference 信息设置样式 */
+                    .reference-info {
+                        font-size: 14px; /* 设置较小的字体 */
+                        color: #888; /* 使用灰色字体，让信息不那么显眼 */
+                        margin-top: 10px; /* 给每一项之间增加一点间距 */
+                    }
+
+                    .reference-info p {
+                        margin: 5px 0; /* 每项信息之间增加小间距 */
                     }
                 `}
             </style>
@@ -254,25 +275,26 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                             </button>
                         )}
 
-                        <div>
-                            <p>MemoRecord ID: {memo_record.id}</p>
-                            <p>Study History ID: {memo_record.study_history_id.id}</p>
-                            <p>
-                                Last Study Time:&nbsp;&nbsp;&nbsp;
-                                {new Date(memo_record.study_history_id.last_updated).toLocaleString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })}
-                            </p>
-                            <p>
-                                Last Study Date:&nbsp;&nbsp;&nbsp;
-                                {new Date(memo_record.study_history_id.last_updated).toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "2-digit",
-                                })}
-                            </p>
-                        </div>
+                    <div className="reference-info">
+                        <p>MemoRecord ID: {memo_record.id}</p>
+                        {/* <p>Study History ID: {memo_record.study_history_id.id}</p> */}
+                        {/* <p>
+                            Last Study Time:&nbsp;&nbsp;&nbsp;
+                            {new Date(memo_record.study_history_id.last_updated).toLocaleString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })}
+                        </p> */}
+                        <p>
+                            Last Study Date:&nbsp;&nbsp;
+                            {new Date(memo_record.study_history_id.last_updated).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                            })}
+                        </p>
+                    </div>
+
                     </form>
                 </div>
 

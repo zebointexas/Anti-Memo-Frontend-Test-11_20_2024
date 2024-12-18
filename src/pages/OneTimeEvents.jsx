@@ -17,6 +17,11 @@ function ViewOneTimeEvents() {
         setStartDate(new Date().toISOString().slice(0, 16));
     }, []);
 
+    const today = new Date().toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric"
+    });
+
     const getOneTimeEvent = () => {
         api
             .get("/api/one_time_events_list/") // 修正 API 路径
@@ -68,16 +73,16 @@ function ViewOneTimeEvents() {
         api
             .delete(`/api/one_time_event/delete/${id}/`)
             .then((res) => {
-                if (res.status === 204) alert("One-time-event deleted!   id: " + id);
+                if (res.status === 204) null;
                 else alert("Failed to delete One Time Event.");
                 getOneTimeEvent();
             })
             .catch((error) => alert(error));
     };
 
-    const markEventAsDone = (id) => {
+    const updateAsDone = (id, is_done_value) => {
         api
-            .patch(`/api/one_time_event/update/${id}/`, { is_done: true }) // 假设使用 PATCH 请求
+            .patch(`/api/one_time_event/update/${id}/`, { is_done: is_done_value }) // 假设使用 PATCH 请求
             .then((res) => {
                 if (res.status === 200) {
                     getOneTimeEvent(); // 更新事件列表
@@ -89,9 +94,37 @@ function ViewOneTimeEvents() {
             });
     };
 
+    const updateEventDetails = (id, updated_record_details) => {
+        api
+            .patch(`/api/one_time_event/update/${id}/`, { event_details: updated_record_details }) // 假设使用 PATCH 请求
+            .then((res) => {
+                if (res.status === 200) {
+                    getOneTimeEvent(); // 更新事件列表
+                }
+            })
+            .catch((err) => {
+                console.error("Error updating event details", err);
+                alert("Error updating event details!");
+            });
+    };
+
+    const postponeStartDate = (id, newStartDate) => {
+        api
+            .patch(`/api/one_time_event/update/${id}/`, { start_date: newStartDate }) // 假设使用 PATCH 请求
+            .then((res) => {
+                if (res.status === 200) {
+                    getOneTimeEvent(); // 更新事件列表
+                }
+            })
+            .catch((err) => {
+                console.error("Error when postpone start date:", err);
+                alert("Error when postpone start date!");
+            });
+    };
+
     return (
         <div>
-            <h2 style={styles.heading}>One-Time Events</h2>
+            <h2 className="heading">One Time Events <span className="date"> - {today}</span> </h2>
 
             {/* 条件渲染：如果有事件，则显示列表 */}
             {oneTimeEvents.length > 0 ? (
@@ -99,7 +132,9 @@ function ViewOneTimeEvents() {
                     <OneTimeEventDetails
                         one_time_event_details={event}
                         onDelete={deleteOneTimeEvent}
-                        onDone={markEventAsDone}
+                        onDone={updateAsDone}
+                        onUpdateEventDetails={updateEventDetails}
+                        onPostpone={postponeStartDate}
                         key={event.id}
                     />
                 ))
@@ -107,8 +142,8 @@ function ViewOneTimeEvents() {
                 <p>No one-time events found.</p>
             )}
 
-            <form onSubmit={createOneTimeEvent} style={styles.form}>
-                <label htmlFor="event_name" style={styles.label}>Event Name:</label>
+            <form onSubmit={createOneTimeEvent} className="form">
+                <label htmlFor="event_name" className="label">Event Name:</label>
                 <input
                     type="text"
                     id="event_name"
@@ -116,106 +151,113 @@ function ViewOneTimeEvents() {
                     required
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
-                    style={styles.input}
+                    className="input"
                 />
                 
-                <label htmlFor="event_details" style={styles.label}>Event Details:</label>
+                <label htmlFor="event_details" className="label">Event Details:</label>
                 <textarea
                     id="event_details"
                     name="event_details"
                     value={eventDetails}
                     onChange={(e) => setEventDetails(e.target.value)}
-                    style={styles.textarea}
+                    className="textarea"
                 />
                 
-                <label htmlFor="start_date" style={styles.label}>Start Date:</label>
+                <label htmlFor="start_date" className="label">Start Date:</label>
                 <input
                     type="date"
                     id="start_date"
                     name="start_date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    style={styles.input}
+                    className="input"
                 />
                 
-                <div style={styles.checkboxContainer}>
-                    <label htmlFor="is_very_important" style={styles.checkboxLabel}>High Importance?</label>
+                <div className="checkboxContainer">
+                    <label htmlFor="is_very_important" className="checkboxLabel">High Importance?</label>
                     <input
                         type="checkbox"
                         id="is_very_important"
                         checked={isHighImportance}
                         onChange={() => setIsHighImportance(!isHighImportance)}
-                        style={styles.checkbox}
+                        className="checkbox"
                     />
                 </div>
 
-                <input type="submit" value="Create An One Time Event" style={styles.submitButton} />
+                <input type="submit" value="Create An One Time Event" className="submitButton" />
             </form>
+
+            <style>
+                {`
+                    .heading {
+                        text-align: center;
+                        color: #333;
+                        margin-bottom: 20px;
+                    }
+                    .form {
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        max-width: 600px;
+                        margin: auto;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                    }
+                    .label {
+                        font-weight: bold;
+                        font-size: 16px;
+                    }
+                    .input {
+                        padding: 10px;
+                        font-size: 16px;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        box-sizing: border-box;
+                    }
+                    .textarea {
+                        padding: 10px;
+                        font-size: 16px;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        box-sizing: border-box;
+                        min-height: 100px;
+                        resize: vertical;
+                    }
+                    .checkboxContainer {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                    .checkboxLabel {
+                        font-size: 16px;
+                        margin: 0;
+                    }
+                    .checkbox {
+                        width: 20px;
+                        height: 20px;
+                        cursor: pointer;
+                    }
+                    .submitButton {
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-top: 20px;
+                    }
+                    .date {
+                        font-size: 14px;  /* 小一点的字体大小 */
+                        color: #777;      /* 更柔和的颜色 */
+                        font-weight: normal;  /* 去掉粗体 */
+                    }
+                `}
+            </style>
         </div>
     );
 }
-
-const styles = {
-    heading: {
-        textAlign: "center",
-        color: "#333",
-        marginBottom: "20px",
-    },
-    form: {
-        backgroundColor: "#fff",
-        padding: "20px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        maxWidth: "600px",
-        margin: "auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px",
-    },
-    label: {
-        fontWeight: "bold",
-        fontSize: "16px",
-    },
-    input: {
-        padding: "10px",
-        fontSize: "16px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        boxSizing: "border-box",
-    },
-    textarea: {
-        padding: "10px",
-        fontSize: "16px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        boxSizing: "border-box",
-        minHeight: "100px",
-        resize: "vertical",
-    },
-    checkboxContainer: {
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-    },
-    checkboxLabel: {
-        fontSize: "16px",
-        margin: 0,
-    },
-    checkbox: {
-        width: "20px",
-        height: "20px",
-        cursor: "pointer",
-    },
-    submitButton: {
-        padding: "10px 20px",
-        fontSize: "16px",
-        backgroundColor: "#4CAF50",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        marginTop: "20px",
-    },
-};
 
 export default ViewOneTimeEvents;
