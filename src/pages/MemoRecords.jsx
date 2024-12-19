@@ -11,7 +11,7 @@ function MemoRecords() {
     const [filteredRecords, setFilteredRecords] = useState([]);
     const [searchRecords, setSearchRecords] = useState([]);
     const [audio, setAudio] = useState(null);
-    const [timer, setTimer] = useState(1500);
+    const [timer, setTimer] = useState(960);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
 
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ function MemoRecords() {
             playSound();
             setTimeout(() => {
                 alert("休息时间结束，请返回工作！");
-                setTimer(1500); // 重置 25 分钟
+                setTimer(960); // 重置 25 分钟
                 setIsTimerRunning(false);
             }, 300000); // 5 分钟后提示
         }
@@ -120,7 +120,7 @@ function MemoRecords() {
             alert("No valid study_scope_id found.");
         }
     };
-
+ 
     const playSound = () => {
         const newAudio = new Audio("/ring_sound.mp3");
         newAudio.loop = true; // 设置音频循环播放
@@ -281,6 +281,86 @@ function MemoRecords() {
                             .search-results strong {
                                 color: #333;
                             }
+
+                            /* Create a Memo Record 按钮样式 */
+                            .btn-create-memo {
+                                background-color: #4caf50;
+                                color: white;
+                                padding: 10px 20px;
+                                font-size: 16px;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;
+                            }
+
+                            .btn-create-memo:hover {
+                                background-color: #45a049;
+                            }
+
+                            /* Create a Memo Record 按钮样式 */
+                            .btn-create-memo {
+                                background-color: #66bb6a; /* 更柔和的绿色 */
+                                color: white;
+                                padding: 8px 16px; /* 缩小按钮尺寸 */
+                                font-size: 14px; /* 减小字体大小 */
+                                border: none;
+                                border-radius: 4px; /* 圆角效果 */
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;
+                            }
+
+                            .btn-create-memo:hover {
+                                background-color: #5caa57; /* 更深的绿色，保持和谐 */
+                            }
+
+                            /* One Time Events 按钮样式 */
+                            .btn-one-time-events {
+                                background-color: #4e8a8a; /* 更柔和的蓝色 */
+                                color: white;
+                                padding: 8px 16px;
+                                font-size: 14px;
+                                border: none;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;
+                            }
+
+                            .btn-one-time-events:hover {
+                                background-color: #417f7f; /* 更深的蓝色 */
+                            }
+
+                            /* Blog 按钮样式 */
+                            .btn-blog {
+                                background-color: #e57373; /* 更柔和的红色 */
+                                color: white;
+                                padding: 8px 16px;
+                                font-size: 14px;
+                                border: none;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;
+                            }
+
+                            .btn-blog:hover {
+                                background-color: #e04e4e; /* 更深的红色 */
+                            }
+
+                            /* Update Study Scope 按钮样式 */
+                            .btn-update-scope {
+                                background-color: #ffb74d; /* 更柔和的橙色 */
+                                color: white;
+                                padding: 8px 16px;
+                                font-size: 14px;
+                                border: none;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;
+                            }
+
+                            .btn-update-scope:hover {
+                                background-color: #ffa726; /* 更深的橙色 */
+                            }
                 `}
             </style>
 
@@ -321,24 +401,36 @@ function MemoRecords() {
             </div>
             <br />
             <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
             <div>
-                <button onClick={goToCreateMemoRecord}>Create a Memo Record</button>  
+                <button className="btn-create-memo" onClick={goToCreateMemoRecord}>Create a Memo Record</button>  
                 <br />
                 <br />
-                <button onClick={goToUpdateStudyScope}>Update Study Scope</button>   
-                <br />
-                <br />
-                <button onClick={goToOneTimeEvents}>One Time Events</button>  
+                <button className="btn-one-time-events" onClick={goToOneTimeEvents}>One Time Events</button>  
                 <br />   
                 <br />
-                <button onClick={goToBlog}>Blog</button>   
+                <button className="btn-blog" onClick={goToBlog}>Blog</button>   
                 <br />   
                 <br />
+                <button className="btn-update-scope" onClick={goToUpdateStudyScope}>Update Study Scope</button>   
                 <br />   
                 <br />
+                <a href="https://docs.google.com/document/d/1qmE2SwqJPqFz-CD0stcDgsVYuGIh9kDqjvcV4V0QNg8/edit?usp=sharing" target="_blank">
+                    My Mission Statement
+                </a>
+              
             </div>
             
             <div>
+                <br />   
+                <br />
+                <br />   
+                <br />
                 <h3>Timer: {formatTime(timer)}</h3>
                 <button onClick={startTimer} disabled={isTimerRunning}>
                     Start

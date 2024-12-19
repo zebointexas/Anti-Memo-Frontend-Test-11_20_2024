@@ -58,7 +58,10 @@ function CreateMemoRecord() {
 
     return (
         <div>
-            <h2>Create a Memo Record</h2>
+            <div><h2>Create a Memo Record</h2></div>
+            <br />
+            <br />
+            <div>
             <form onSubmit={createMemoRecord}>
 
                 <label htmlFor="question">Question:</label>
@@ -102,109 +105,118 @@ function CreateMemoRecord() {
 
                 <input type="submit" value="Submit" />
             </form>
+            </div>
 
-            {/* 跳转到更新科目类型页面的按钮 */}
-            <button onClick={goToUpdateSubjectType}>Add or delete a subject type</button>
+            
+            <br />
+            <br />
+            <br />
+            <br /> 
 
+            <div>
+                <button className="AddOrDeleteSubjectType" onClick={goToUpdateSubjectType}>Add or delete a subject type</button>
+            </div>
 
             <style>
-                {`
-                    /* 样式优化：表单部分 */
-                    form {
-                        background-color: #f9f9f9;
-                        padding: 30px;
-                        border-radius: 12px;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                        max-width: 600px;
-                        margin: auto;
-                        font-family: 'Arial', sans-serif;
-                    }
+            {`
+                form {
+                    background-color: #f9f9f9;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    max-width: 1200px;
+                    margin: auto;
+                    font-family: 'Arial', sans-serif;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px; /* 控制每个表单项的间距 */
+                }
 
-                    form h2 {
-                        color: #333;
-                        font-size: 28px;
-                        margin-bottom: 20px;
-                        text-align: center;
-                        font-weight: 600;
-                    }
+                form h2 {
+                    color: #333;
+                    font-size: 28px;
+                    margin-bottom: 20px;
+                    text-align: center;
+                    font-weight: 600;
+                }
 
-                    form label {
-                        color: #555;
-                        font-size: 16px;
-                        font-weight: 500;
-                        margin-top: 12px;
-                    }
+                form .form-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
 
-                    form input,
-                    form textarea {
-                        width: 100%;
-                        padding: 12px 16px;
-                        margin: 8px 0 20px;
-                        border: 1px solid #ddd;
-                        border-radius: 8px;
-                        box-sizing: border-box;
-                        font-size: 16px;
-                        transition: all 0.3s ease;
-                    }
+                form label {
+                    color: #555;
+                    font-size: 16px;
+                    font-weight: 500;
+                }
 
-                    /* 特别针对 question 和 record details 输入框，增加高度和宽度 */                    
-                    form textarea {
-                        height: 50px; /* 增加高度 */
-                    }
+                form textarea {
+                    width: 98%;
+                    padding: 12px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                }
 
-                    form textarea {
-                        height: 150px; /* 更高的文本区域 */
-                    }
+                form select {
+                    width: 100%;
+                    padding: 12px 16px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                }
 
-                    /* 聚焦效果 */
-                    form input:focus,
-                    form textarea:focus {
-                        border-color: #007bff;
-                        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-                    }
+                form textarea {
+                    resize: none; /* 禁止拖动大小，统一样式 */
+                }
 
-                    form input[type="submit"] {
-                        background-color: #007bff;
-                        color: white;
-                        padding: 12px 24px;
-                        border: none;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-size: 18px;
-                        font-weight: 600;
-                        transition: background-color 0.3s ease;
-                    }
+                form textarea#content {
+                    height: 400px; /* 适合 Record Details */
+                }
 
-                    form input[type="submit"]:hover {
-                        background-color: #0056b3;
-                    }
+                form textarea#question {
+                    height: 100px; /* 问题部分的高度 */
+                }
 
-                    form input[type="submit"]:active {
-                        background-color: #004085;
-                    }
+                form input[type="submit"] {
+                    background-color: #007bff;
+                    color: white;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 18px;
+                    font-weight: 600;
+                    transition: background-color 0.3s ease;
+                }
 
-                    /* 响应式：小屏幕调整 */
-                    @media (max-width: 600px) {
-                        form {
-                            padding: 20px;
-                        }
+                form input[type="submit"]:hover {
+                    background-color: #0056b3;
+                }
 
-                        form h2 {
-                            font-size: 24px;
-                        }
+                button {
+                    background-color: #e0e0e0; /* 浅灰色 */
+                    color: #333333; /* 深灰色文字 */
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    transition: background-color 0.3s ease;
+                    display: inline-block; /* 改为 inline-block 便于右对齐 */
+                    margin: 20px 0;
+                    float: right; /* 靠右对齐 */
+                }
 
-                        form input,
-                        form textarea {
-                            padding: 10px;
-                        }
+                button:hover {
+                    background-color: #bdbdbd; /* 鼠标悬停时的稍深灰色 */
+                }
 
-                        form input[type="submit"] {
-                            font-size: 16px;
-                            padding: 10px 20px;
-                        }
-                    }
-                `}
-            </style>
+            `}
+        </style>
 
         </div>        
     );
