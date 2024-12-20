@@ -165,13 +165,14 @@ function OneTimeEventDetails({ one_time_event_details, onDelete, onDone, onUpdat
 
                     .edit-textarea {
                         width: 100%;
-                        min-height: 100px;
+                        min-height: 300px;
                         padding: 10px;
                         font-size: 14px;
                         border: 1px solid #ddd;
                         border-radius: 4px;
                         margin-top: 10px;
                         resize: vertical;
+                        resize: horizontal; 
                     }
 
                     /* 固定按钮样式 */

@@ -12,6 +12,7 @@ import UpdateStudyScope from "./pages/UpdateStudyScope"
 import CreateOneTimeEvent from "./pages/OneTimeEvents"
 import OneTimeEvents from "./pages/OneTimeEvents"
 import Blog from "./pages/Blog"
+import DailyCheckUp from "./pages/DailyCheckUp"
 
 function Logout() {
   localStorage.clear()
@@ -45,6 +46,7 @@ function App() {
         <Route path="/one-time-events" element={<OneTimeEvents />} />
         <Route path="/update-subject-type" element={<UpdateSubjectType />} />
         <Route path="/update-study-scope" element={<UpdateStudyScope />} />
+        <Route path="/daily-check-up" element={<DailyCheckUp />} />
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
     </BrowserRouter>

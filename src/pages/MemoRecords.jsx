@@ -13,8 +13,48 @@ function MemoRecords() {
     const [audio, setAudio] = useState(null);
     const [timer, setTimer] = useState(960);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
-
     const navigate = useNavigate();
+
+    const [checkboxes, setCheckboxes] = useState({
+        resume: false,
+        toastmaster: false,
+        algorithm: false,
+        java: false,
+        sql: false,
+        systemDesign: false,
+    });
+
+    // 加载本地存储中的勾选状态
+    useEffect(() => {
+        const savedState = Object.keys(checkboxes).reduce((acc, key) => {
+            const storedValue = localStorage.getItem(key);
+            acc[key] = storedValue === 'true';
+            return acc;
+        }, {});
+        setCheckboxes(savedState);
+    }, []);
+
+    // 更新本地存储中的状态
+    const handleCheckboxChange = (event) => {
+        const { id, checked } = event.target;
+        const newCheckboxes = { ...checkboxes, [id]: checked };
+        setCheckboxes(newCheckboxes);
+        localStorage.setItem(id, checked);
+    };
+
+    // 提交按钮是否可用
+    const allChecked = Object.values(checkboxes).every((isChecked) => isChecked);
+
+    // 提交事件
+    const handleSubmit = () => {
+        alert('打卡成功！');
+        const resetCheckboxes = Object.keys(checkboxes).reduce((acc, key) => {
+            acc[key] = false;
+            return acc;
+        }, {});
+        setCheckboxes(resetCheckboxes);
+        Object.keys(resetCheckboxes).forEach((key) => localStorage.setItem(key, 'false'));
+    };
 
     useEffect(() => {
         getMemoRecords();
@@ -180,57 +220,134 @@ function MemoRecords() {
 
     return (
         <div>
+            <div>
+                <h2>Memo Records</h2>
+
+                <p>Records left: {filteredRecords.length - currentIndex}</p>
+
+                <br />
+
+                {currentIndex === filteredRecords.length ? (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <img 
+                            src="https://media.tenor.com/ZzQNUhQckqMAAAAC/excited-friends.gif" 
+                            onClick={refreshData}
+                            alt="Excited Friends"
+                        />
+                        <br />
+                        <br />
+                    </div>
+                ) : (
+                    currentRecord && (
+                        <div>
+                            <MemoRecordDetails 
+                                memo_record={currentRecord}
+                                goToNext={goToNext} 
+                            />
+                            {currentRecord.author && <p>Author: {currentRecord.author}</p>}
+                        </div>
+                    )
+                )}
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />             
+            <div className="button-and-checkbox">
+                <div className="button-and-checkbox-button">
+                    <button className="btn-create-memo" onClick={goToCreateMemoRecord}>Create a Memo Record</button>
+                    <br />
+                    <br />
+                    <button className="btn-one-time-events" onClick={goToOneTimeEvents}>One Time Events</button>
+                    <br />
+                    <br />
+                    <button className="btn-blog" onClick={goToBlog}>Blog</button>
+                    <br />
+                    <br />
+                    <button className="btn-update-scope" onClick={goToUpdateStudyScope}>Update Study Scope</button>
+                    <br />
+                    <br />
+                    <a href="https://docs.google.com/document/d/1qmE2SwqJPqFz-CD0stcDgsVYuGIh9kDqjvcV4V0QNg8/edit?usp=sharing" target="_blank">
+                        My Mission Statement
+                    </a>
+                </div>
+                <div id="div-iframe">
+                    <iframe id="iframe" src="http://localhost:5173/daily-check-up"  width="300" height="340"></iframe>
+                </div>
+            </div>
+            <div>
+                <br />   
+                <br />
+                <br />   
+                <br />
+                <h3>Timer: {formatTime(timer)}</h3>
+                <button onClick={startTimer} disabled={isTimerRunning}>
+                    Start
+                </button>
+                <button onClick={resetTimer}>Reset</button>
+
+                <br />
+                <br />
+
+                <button onClick={playSound_Music}>Play Music</button>
+                <button onClick={pauseSound_Music}>Pause Music</button>
+                <br />   
+                <br />
+            </div>
+
+            <br />
+            <br />
+
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: "0px",
+                }}
+            >
+                <input
+                    type="text"
+                    placeholder="Search for records"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown} // Add the event listener for Enter key
+                />
+            </div>
+            <br />
+            <br />
+
+
+            <br />
+            <br />
+
+            {/* Display the filtered search results below currentRecord */}
+            {searchRecords.length > 0 && (
+                <div className="search-results">
+                    <h3>Search Results: {searchRecords.length}</h3>
+                    <ul>
+                        {searchRecords.map((record, index) => (
+                            <li key={index}>
+                                <p><strong>Question:</strong> {record.question}</p>
+                                <p><strong>Record Detail:</strong> {record.record_details}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
             <style>
                 {`
-                            /* 样式合并和简化 */
-                            .button-container {
-                                flex: 1; /* 按钮区域占据较小空间 */
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                margin-left: 20px;
-                            }
-
-                            .button-container button {
-                                margin: 10px 0;
-                                padding: 10px 20px;
-                                font-size: 16px;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                width: 100%;
-                                transition: opacity 0.2s ease-in-out; /* 统一按钮 hover 效果 */
-                            }
-
-                            /* 为不同按钮设置背景颜色 */
-                            .delete-button {
-                                background-color: #ff6b6b;
-                                color: #fff;
-                            }
-
-                            .remember-button {
-                                background-color: #6bcf63;
-                                color: #fff;
-                            }
-
-                            .forget-button {
-                                background-color: #f0ad4e;
-                                color: #fff;
-                            }
-
-                            .edit-button {
-                                background-color: #5bc0de;
-                                color: #fff;
-                            }
-
-                            .button-container button:hover {
-                                opacity: 0.9;
-                            }
-
-                            .button-container .timer-info {
-                                margin-bottom: 10px;
-                            }
-
                             /* 输入框样式 */
                             input {
                                 padding: 10px;
@@ -361,131 +478,18 @@ function MemoRecords() {
                             .btn-update-scope:hover {
                                 background-color: #ffa726; /* 更深的橙色 */
                             }
+
+                            .button-and-checkbox {
+                                display: flex; 
+                                align-items: 
+                                flex-start; gap: 20px;
+                            }
+
+                            .button-and-checkbox-button {
+                                flex-basis: 800px;
+                            }
                 `}
-            </style>
-
-            <div>
-                <h2>Memo Records</h2>
-
-                <p>Records left: {filteredRecords.length - currentIndex}</p>
-
-                <br />
-
-                {currentIndex === filteredRecords.length ? (
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
-                        <img 
-                            src="https://media.tenor.com/ZzQNUhQckqMAAAAC/excited-friends.gif" 
-                            onClick={refreshData}
-                            alt="Excited Friends"
-                        />
-                        <br />
-                        <br />
-                    </div>
-                ) : (
-                    currentRecord && (
-                        <div>
-                            <MemoRecordDetails 
-                                memo_record={currentRecord}
-                                goToNext={goToNext} 
-                            />
-                            {currentRecord.author && <p>Author: {currentRecord.author}</p>}
-                        </div>
-                    )
-                )}
-            </div>
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <div>
-                <button className="btn-create-memo" onClick={goToCreateMemoRecord}>Create a Memo Record</button>  
-                <br />
-                <br />
-                <button className="btn-one-time-events" onClick={goToOneTimeEvents}>One Time Events</button>  
-                <br />   
-                <br />
-                <button className="btn-blog" onClick={goToBlog}>Blog</button>   
-                <br />   
-                <br />
-                <button className="btn-update-scope" onClick={goToUpdateStudyScope}>Update Study Scope</button>   
-                <br />   
-                <br />
-                <a href="https://docs.google.com/document/d/1qmE2SwqJPqFz-CD0stcDgsVYuGIh9kDqjvcV4V0QNg8/edit?usp=sharing" target="_blank">
-                    My Mission Statement
-                </a>
-              
-            </div>
-            
-            <div>
-                <br />   
-                <br />
-                <br />   
-                <br />
-                <h3>Timer: {formatTime(timer)}</h3>
-                <button onClick={startTimer} disabled={isTimerRunning}>
-                    Start
-                </button>
-                <button onClick={resetTimer}>Reset</button>
-
-                <br />
-                <br />
-
-                <button onClick={playSound_Music}>Play Music</button>
-                <button onClick={pauseSound_Music}>Pause Music</button>
-                <br />   
-                <br />
-            </div>
-
-            <br />
-            <br />
-
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: "0px",
-                }}
-            >
-                <input
-                    type="text"
-                    placeholder="Search for records"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleKeyDown} // Add the event listener for Enter key
-                />
-            </div>
-            <br />
-            <br />
-
-
-            <br />
-            <br />
-
-            {/* Display the filtered search results below currentRecord */}
-            {searchRecords.length > 0 && (
-                <div className="search-results">
-                    <h3>Search Results: {searchRecords.length}</h3>
-                    <ul>
-                        {searchRecords.map((record, index) => (
-                            <li key={index}>
-                                <p><strong>Question:</strong> {record.question}</p>
-                                <p><strong>Record Detail:</strong> {record.record_details}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            </style>   
         </div>
     );
 }
