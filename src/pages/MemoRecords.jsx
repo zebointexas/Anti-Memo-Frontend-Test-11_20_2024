@@ -277,14 +277,54 @@ function MemoRecords() {
                     <button className="btn-update-scope" onClick={goToUpdateStudyScope}>Update Study Scope</button>
                     <br />
                     <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                     <a href="https://docs.google.com/document/d/1qmE2SwqJPqFz-CD0stcDgsVYuGIh9kDqjvcV4V0QNg8/edit?usp=sharing" target="_blank">
                         My Mission Statement
                     </a>
+                    <br />
+                    <br />
+                    <a href="https://docs.google.com/document/d/1SePGb5BSwQoYypjvwrAkI_pZZKf_2De9C52bx79fAF0/edit?tab=t.0" target="_blank">
+                        All LeetCode Questions
+                    </a>
+                    <br />
+                    <br />
+                    <a href="https://docs.google.com/spreadsheets/d/1QitHv0-EsULD9F5mNsWNiQxyDGmbD8Ku9lTcvqXpaOQ/edit?gid=0#gid=0" target="_blank">
+                        公司Profile
+                    </a>
+                    <br />
                 </div>
                 <div id="div-iframe">
                     <iframe id="iframe" src="http://localhost:5173/daily-check-up"  width="300" height="340"></iframe>
                 </div>
             </div>
+            <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
             <div>
                 <br />   
                 <br />

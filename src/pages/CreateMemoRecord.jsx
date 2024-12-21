@@ -158,6 +158,7 @@ function CreateMemoRecord() {
                     border-radius: 8px;
                     font-size: 16px;
                     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                    resize: vertical;
                 }
 
                 form select {
@@ -169,12 +170,8 @@ function CreateMemoRecord() {
                     transition: border-color 0.3s ease, box-shadow 0.3s ease;
                 }
 
-                form textarea {
-                    resize: none; /* 禁止拖动大小，统一样式 */
-                }
-
                 form textarea#content {
-                    height: 400px; /* 适合 Record Details */
+                    min-height: 800px; /* 适合 Record Details */
                 }
 
                 form textarea#question {

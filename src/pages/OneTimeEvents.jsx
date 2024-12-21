@@ -37,11 +37,11 @@ function ViewOneTimeEvents() {
 
     const createOneTimeEvent = (e) => {
         e.preventDefault();
-    
-        // 如果用户只选择了日期，自动添加时间为 "00:00:00"
+
+        // 将日期转换为本地时间
         const formattedStartDate = startDate.includes("T")
-            ? startDate
-            : `${startDate}T00:00:00`;
+        ? new Date(startDate).toISOString() // 如果已有时间部分，转为标准 ISO 时间
+        : new Date(`${startDate}T00:00:00`).toISOString().replace("Z", ""); // 去掉 "Z"，以保留本地时区
     
         const eventData = {
             event_name: eventName,

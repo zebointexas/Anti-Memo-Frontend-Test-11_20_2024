@@ -207,6 +207,11 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                         font-size: 18px;
                     }
 
+                    .question-text {
+                        white-space: pre-wrap; /* 保证文本换行，保留换行符 */
+                        word-wrap: break-word; /* 保证长单词自动换行 */
+                    }
+
                     /* 为显示答案的区域添加样式 */
                     .answer-text {
                         white-space: pre-wrap; /* 保证文本换行，保留换行符 */
@@ -247,8 +252,8 @@ function MemoRecordDetails({ memo_record, goToNext }) {
             <div className="memo_record-container">
                 <div className="content-section">
                     <form>
-                        <p>
-                            <span>{memo_record.question}</span>
+                        <p >
+                            <span className="question-text">{memo_record.question}</span>
                         </p>
 
                         {showContent ? (
