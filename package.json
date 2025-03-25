@@ -3,12 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  // "scripts": {
+  //   "dev": "vite",
+  //   "build": "vite build",
+  //   "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+  //   "preview": "vite preview"
+  // },
+
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview --host 0.0.0.0 --port $PORT"
   },
+
   "dependencies": {
     "@tinymce/tinymce-react": "^5.1.1",
     "axios": "^1.6.7",
