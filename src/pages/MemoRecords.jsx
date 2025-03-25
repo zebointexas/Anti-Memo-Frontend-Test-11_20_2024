@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import MemoRecordDetails from "../components/MemoRecordDetails";
-import DailyCheckUp from "./pages/DailyCheckUp.jsx";
+import DailyCheckUp from "./DailyCheckUp.jsx";
 
 function MemoRecords() {
 
@@ -305,9 +305,9 @@ function MemoRecords() {
                     <br />
                 </div>
  
-                <div id="div-iframe" style={{ width: '300px', height: '400px', border: '1px solid #ccc' }}>
+                {/* <div id="div-iframe" style={{ width: '300px', height: '600px', border: '1px solid #ccc' }}>
                     <DailyCheckUp style={{ width: '100%', height: '100%' }} />
-                </div>
+                </div> */}
 
             </div>
             <br />
