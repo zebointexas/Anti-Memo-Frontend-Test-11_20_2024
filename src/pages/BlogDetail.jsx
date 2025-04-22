@@ -99,7 +99,6 @@ function BlogDetail() {
       })
       .then((res) => {
         if (res.status === 200) {
-          alert("Content saved successfully!");
           setBlog([{ ...blog[0], blog_content: content, blog_name: editedBlogName }]);
           setIsEditing(false);
         } else {
@@ -202,13 +201,20 @@ function BlogDetail() {
             className="blog-content"
             onClick={handleLinkClick}
           />
-          <div className="bottom-button-container">
+          {/* <div className="bottom-button-container">
             <button onClick={handleDelete} className="delete-button">
               Delete
             </button>
-          </div>
+          </div> */}
         </div>
       )}
+
+      {/* <div className="bottom-button-fixed-container">
+        <button onClick={handleDelete} className="delete-button bottom-delete-button">
+          Delete This Blog
+        </button>
+      </div> */}
+
 
       <p>Created On: {new Date(blog[0].created_at).toLocaleDateString()}</p>
       <a href="/blog" className="back-link">
@@ -401,6 +407,45 @@ function BlogDetail() {
           .back-link:hover {
             text-decoration: underline;
           }
+
+          body {
+            background-color: #f6f4e6; /* 护眼的浅米色背景 */
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* 纸张纹理图 */
+            background-repeat: repeat;
+            font-family: 'Georgia', serif;
+          }
+
+          .blog-container {
+            background-color: rgba(255, 255, 255, 0.88); /* 淡白色背景，略透明像纸张 */
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            border: 1px solid #e0dccc;
+          }
+
+          .bottom-button-fixed-container {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px dashed #ccc;
+            text-align: center;
+          }
+
+          .bottom-delete-button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #a94442;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+          }
+
+          .bottom-delete-button:hover {
+            background-color: #843534;
+          }
+
         `}
       </style>
     </div>

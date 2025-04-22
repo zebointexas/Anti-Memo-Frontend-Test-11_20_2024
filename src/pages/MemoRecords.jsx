@@ -220,10 +220,10 @@ function MemoRecords() {
                     >
                         <img 
                             // src="https://images.stockcake.com/public/7/9/7/797e5cc1-2496-4921-9309-ce6f28d6718b_large/joyful-office-celebration-stockcake.jpg" 
-                            src="https://lh3.googleusercontent.com/pw/AP1GczOES0w0Elq-doaTAb4RI-Bfk2m4u1PCciSlk3-pNzMLd_QPIc8t0uy8xqrU-wghu8OJh8Di5tvsm5AzVp2vc-QGrcz83B8JgE8g3TNIGu-WTCnPDkrqQwBT0eNaxuIkJyy37SGAzL7ecLDT92JJYOM=w1842-h1100-s-no-gm?authuser=0"
+                            src="https://i.gifer.com/2DV.gif"
                             onClick={currentIndexAddOne}
                             alt="Excited Friends"
-                            style={{ width: '100%', height: 'auto', maxWidth: '100%' }}
+                            style={{ width: '50%', height: 'auto', maxWidth: '50%' }}
                         />
                         <br />
                         <br />
