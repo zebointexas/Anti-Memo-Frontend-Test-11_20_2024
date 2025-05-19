@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import api from "../api";
+import linkifyHtml from 'linkify-html';
 
 function MemoRecordDetails({ memo_record, goToNext }) {
 
@@ -145,23 +146,7 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                 .catch((error) => alert(error));
         }
     };
-
-    // 显示文本中的超链接
-    const renderTextWithLinks = (text) => {
-        const urlPattern = /(https?:\/\/[^\s]+)/g;
-        return text.split(urlPattern).map((part, index) => {
-            // 如果该部分匹配到 URL，渲染为 a 标签
-            if (part.match(urlPattern)) {
-                return (
-                    <a key={index} href={part} target="_blank" rel="noopener noreferrer">
-                        {part}
-                    </a>
-                );
-            }
-            return part; // 否则直接显示普通文本
-        });
-    };
-
+ 
     return (
         <>
             <style>
@@ -234,7 +219,6 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                     }
 
                     #reset-study-plan-button {
-
                         align-self: flex-end; /* 将按钮放置到容器底部 */
                         background-color: rgba(18, 20, 31, 0.37);
                         font-size: 8px;
@@ -275,11 +259,12 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                     .question-text {
                         white-space: pre-wrap; /* 保证文本换行，保留换行符 */
                         word-wrap: break-word; /* 保证长单词自动换行 */
-                        height: auto; /* 高度根据内容自动调整 */                        
+                        height: auto; /* 高度根据内容自动调整 */
+                        font-size: 20px; /* 放大字体尺寸 */
+                        line-height: 1.5; /* 增加行高以提高可读性 */
                     }
 
                     /* 为显示答案的区域添加样式 */
-                    
                     .answer-text {
                         white-space: pre-wrap; /* 保证文本换行，保留换行符 */
                         word-wrap: break-word; /* 保证长单词自动换行 */
@@ -289,18 +274,71 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                         border-radius: 8px; /* 圆角效果 */
                         background-color:rgb(249, 249, 249); /* 设置背景颜色 */
                         margin-top: 10px; /* 给顶部增加间距 */
-                        font-size: 16px; /* 调整字体大小，使其更易读 */
+                        font-size: 18px; /* 放大字体尺寸 */
+                        line-height: 1.6; /* 增加行高以提高可读性 */
                         box-sizing: border-box; /* 确保边框和内边距不影响宽度计算 */
                         fontFamily: "Courier, monospace"
                     }
-
+                    
+                    /* 富文本内容支持 */
+                    .answer-text a, .question-text a {
+                        color: #1a73e8;
+                        text-decoration: underline;
+                    }
+                    
+                    .answer-text img, .question-text img {
+                        max-width: 100%;
+                        height: auto;
+                        margin: 10px 0;
+                    }
+                    
+                    .answer-text code, .question-text code {
+                        background-color: #f0f0f0;
+                        padding: 2px 5px;
+                        border-radius: 3px;
+                        font-family: Consolas, Monaco, 'Andale Mono', monospace;
+                    }
+                    
+                    .answer-text pre, .question-text pre {
+                        background-color: #f5f5f5;
+                        padding: 10px;
+                        border-radius: 5px;
+                        overflow-x: auto;
+                        border: 1px solid #ddd;
+                    }
+                    
+                    .answer-text ul, .question-text ul, 
+                    .answer-text ol, .question-text ol {
+                        margin-left: 20px;
+                        padding-left: 20px;
+                    }
+                    
+                    .answer-text table, .question-text table {
+                        border-collapse: collapse;
+                        width: 100%;
+                        margin: 10px 0;
+                    }
+                    
+                    .answer-text th, .question-text th,
+                    .answer-text td, .question-text td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    
+                    .answer-text th, .question-text th {
+                        background-color: #f2f2f2;
+                    }
 
                     textarea {
                         width: 100%;
                         min-height: 50px;
-                        padding: 5px;
+                        padding: 10px;
                         box-sizing: border-box;
                         resize: vertical; /* 允许垂直方向调整大小 */
+                        font-size: 18px; /* 放大编辑框字体 */
+                        line-height: 1.5;
+                        font-family: inherit; /* 保持字体一致性 */
                     }
 
                     /* 为 reference 信息设置样式 */
@@ -323,12 +361,14 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                             {isEditing ? (
                                 <textarea
                                     ref={textareaRef}
-                                    value={updated_record_question}  // 使用 updated_question 作为值
-                                    onChange={handleQuestionChange}  // 处理问题文本的改变
+                                    value={updated_record_question}
+                                    onChange={handleQuestionChange}
                                     wrap="soft"
                                 />
                             ) : (
-                                <span className="question-text">{renderTextWithLinks(updated_record_question)}</span>
+                                <div className="question-text">
+                                    {updated_record_question}
+                                </div>
                             )}
                         </p>
                         {showContent ? (
@@ -340,14 +380,14 @@ function MemoRecordDetails({ memo_record, goToNext }) {
                                     wrap="soft"
                                 />
                             ) : (
-                                <p className="answer-text">
-                                    {renderTextWithLinks(updated_record_details)}
+                                <div className="answer-text">
+                                    {updated_record_details}
                                     <br /> 
                                     <br />
                                     <button id="hide_button" type="button" onClick={() => setShowContent(false)}>
                                     Hide Answer
                                     </button>
-                                </p>                                
+                                </div>                                
                             )
                         ) : (
                             <button id="display_button" type="button" onClick={() => setShowContent(true)}>
@@ -357,14 +397,6 @@ function MemoRecordDetails({ memo_record, goToNext }) {
 
                     <div className="reference-info">
                         <p>ID: {memo_record.id}</p>
-                        {/* <p>Study History ID: {memo_record.study_history_id.id}</p> */}
-                        {/* <p>
-                            Last Study Time:&nbsp;&nbsp;&nbsp;
-                            {new Date(memo_record.study_history_id.last_updated).toLocaleString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            })}
-                        </p> */}
                         <p>
                             Last Study Date:&nbsp;&nbsp;
                             {new Date(memo_record.study_history_id.last_updated).toLocaleDateString("en-US", {
