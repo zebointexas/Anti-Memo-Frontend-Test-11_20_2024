@@ -10,6 +10,9 @@ function CreateBlog() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const handleFilterChange = (event) => {
     setSelectedFilter(event.target.value);
@@ -19,6 +22,34 @@ function CreateBlog() {
     selectedFilter === "All"
       ? blogs
       : blogs.filter((blog) => blog.blog_type === selectedFilter);
+
+  // 搜索功能
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    
+    if (query.trim() === "") {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    const results = blogs.filter(blog => {
+      const titleMatch = blog.blog_name.toLowerCase().includes(query.toLowerCase());
+      // 移除HTML标签来搜索纯文本内容
+      const cleanContent = blog.blog_content.replace(/<[^>]*>/g, '');
+      const contentMatch = cleanContent.toLowerCase().includes(query.toLowerCase());
+      return titleMatch || contentMatch;
+    });
+
+    setSearchResults(results);
+    setShowSearchResults(true);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowSearchResults(false);
+  };
 
   useEffect(() => {
     const savedName = localStorage.getItem("blog_name");
@@ -188,6 +219,14 @@ function CreateBlog() {
       .catch((err) => alert(err));
   };
 
+  // 滚动到搜索区域
+  const scrollToSearch = () => {
+    const searchElement = document.getElementById('search-section');
+    if (searchElement) {
+      searchElement.scrollIntoView({ behavior: 'instant' });
+    }
+  };
+
   return (
     <div>
       <div>
@@ -201,74 +240,15 @@ function CreateBlog() {
           </a>
         </p>
       </div>
-      <div>
-        <h2 className="center-text">Create a New Blog</h2>
-        <form onSubmit={createBlog}>
-          <label htmlFor="name">Blog Name:</label>
-          <br />
-          <input
-            type="text"
-            id="name"
-            name="name"
-            required
-            value={blog_name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <br />
 
-          <label htmlFor="blog_type">Blog Type:    </label>
-          <label className="labelForCreate">
-            Diary
-            <input
-              type="radio"
-              name="blog_type"
-              value="Personal"
-              checked={blog_type === "Personal"}
-              onChange={(e) => setType(e.target.value)}
-            />
-          </label>
-          <label className="labelForCreate">
-            Inspire
-            <input
-              type="radio"
-              name="blog_type"
-              value="Inspire"
-              checked={blog_type === "Inspire"}
-              onChange={(e) => setType(e.target.value)}
-            />
-          </label>
-          <label className="labelForCreate">
-            Tech
-            <input
-              type="radio"
-              name="blog_type"
-              value="Tech"
-              checked={blog_type === "Tech"}
-              onChange={(e) => setType(e.target.value)}
-            />
-          </label>
-          <br />
-          <br />
-
-          <label className="blogContentCreate" htmlFor="content">
-            Blog Content:
-          </label>
-          <br />
-          <textarea
-            id="content"
-            name="content"
-            required
-            value={blog_content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          <br />
-          <input type="submit" value="Submit" />
-        </form>
-      </div>
+      {/* 右上角跳转到搜索的按钮 */}
+      <button onClick={scrollToSearch} className="scroll-to-search-button">
+        Go To Bottom
+      </button>
+      
 
       {loading && <p>Loading blogs...</p>}
       {error && <p>{error}</p>}
-
 
       <div>
         <div>
@@ -401,8 +381,246 @@ function CreateBlog() {
         </ul>
       </div>
 
+      <div>
+        <h2 className="center-text">Create a New Blog</h2>
+        <form onSubmit={createBlog}>
+          <label htmlFor="name">Blog Name:</label>
+          <br />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            value={blog_name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <br />
+
+          <label htmlFor="blog_type">Blog Type:    </label>
+          <label className="labelForCreate">
+            Diary
+            <input
+              type="radio"
+              name="blog_type"
+              value="Personal"
+              checked={blog_type === "Personal"}
+              onChange={(e) => setType(e.target.value)}
+            />
+          </label>
+          <label className="labelForCreate">
+            Inspire
+            <input
+              type="radio"
+              name="blog_type"
+              value="Inspire"
+              checked={blog_type === "Inspire"}
+              onChange={(e) => setType(e.target.value)}
+            />
+          </label>
+          <label className="labelForCreate">
+            Tech
+            <input
+              type="radio"
+              name="blog_type"
+              value="Tech"
+              checked={blog_type === "Tech"}
+              onChange={(e) => setType(e.target.value)}
+            />
+          </label>
+          <br />
+          <br />
+
+          <label className="blogContentCreate" htmlFor="content">
+            Blog Content:
+          </label>
+          <br />
+          <textarea
+            id="content"
+            name="content"
+            required
+            value={blog_content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <br />
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+
+      {/* 搜索功能区域 - 移到页面最下面 */}
+      <div id="search-section" className="search-container">
+        <h3>Search Blogs</h3>
+        <div className="search-input-container">
+          <input
+            type="text"
+            placeholder="Search by title or content..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button onClick={clearSearch} className="clear-search-button">
+              Clear
+            </button>
+          )}
+        </div>
+        
+        {showSearchResults && (
+          <div className="search-results">
+            <h4>Search Results ({searchResults.length} found)</h4>
+            {searchResults.length > 0 ? (
+              <ul className="search-results-list">
+                {searchResults.map((blog) => (
+                  <li key={blog.id} className="search-result-item">
+                    <Link
+                      to={`/blog/${blog.id}`}
+                      style={{ textDecoration: "none", color: "#007BFF", fontWeight: "bold" }}
+                    >
+                      {blog.blog_name}
+                    </Link>
+                    <span className="blog-type-badge">{blog.blog_type}</span>
+                    <span className="blog-date">
+                      {new Date(blog.created_at).toLocaleDateString()}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No blogs found matching your search.</p>
+            )}
+          </div>
+        )}
+      </div>
+
       <style>
         {`
+          .scroll-to-search-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+          }
+
+          .scroll-to-search-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+          }
+
+          .scroll-to-search-button:active {
+            transform: translateY(0);
+          }
+
+          .search-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .search-container h3 {
+            margin-top: 0;
+            color: #333;
+          }
+
+          .search-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+          }
+
+          .search-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+          }
+
+          .search-input:focus {
+            outline: none;
+            border-color: #007BFF;
+          }
+
+          .clear-search-button {
+            padding: 12px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+          }
+
+          .clear-search-button:hover {
+            background-color: #c82333;
+          }
+
+          .search-results {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #ddd;
+          }
+
+          .search-results h4 {
+            margin-top: 0;
+            color: #333;
+            font-size: 18px;
+          }
+
+          .search-results-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+          }
+
+          .search-result-item:hover {
+            background-color: #f8f9fa;
+          }
+
+          .search-result-item:last-child {
+            border-bottom: none;
+          }
+
+          .blog-type-badge {
+            background-color: #007BFF;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+          }
+
+          .blog-date {
+            color: #666;
+            font-size: 14px;
+            margin-left: auto;
+          }
+
           .heading-container {
             display: flex;
             justify-content: space-between;
